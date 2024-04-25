@@ -1,0 +1,32 @@
+name: LettuceEngine Build And Test Static Lib
+
+on:
+  push:
+    branches: [ "develop", "main" ]
+  pull_request:
+    branches: [ "develop", "main" ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout LettuceEngine
+      uses: actions/checkout@v4
+    - name: Build Static Lib
+      run: make BuildStaticLib
+    - name: Build Test Project
+      working-directory: ./LettuceEngineTests
+      run: make BuildTestExe
+    - name: Run Tests
+      run: ./LettuceEngineTests/bin/Test.exe --reporter JUnit::out=result-junit.xml --reporter console::out=-::colour-mode=ansi
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: result-junit.xml
+        fail_on_failure: true
+        detailed_summary: true
+        require_tests: true
+

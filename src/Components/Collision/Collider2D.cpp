@@ -1,0 +1,88 @@
+#include "Components/Collision/Collider2D.h"
+#include <stdexcept>
+#include <string>
+#include "Engine.h"
+#include "CollisionSystem/CollisionSystem2D.h"
+#include "Drawing/BasicDrawing.h"
+#include "Math/Color.h"
+#include "Components/ComponentFactory.h"
+REGISTER(Collider2D)
+
+using json = nlohmann::json;
+using LettuceEngine::Math::Vector2;
+using LettuceEngine::Math::Color;
+
+Collider2D::Collider2D() : Component() {
+    _box = LettuceEngine::CollisionSystem::AABB();
+}
+Collider2D::~Collider2D() {
+    if (_enabled)
+        SetEnabled(false);
+}
+
+void Collider2D::Enabled() {
+    _callbackID = _lettuce->OnPositionChanged()->AddCallback(&Collider2D::PositionChange, this);
+    Collision2DQuadTree* system = LettuceEngine::Engine::GetInstance()->CollisionSystem();
+    if (!system->Insert(this))
+        Log::Warning("Collider was not inserted into the system");
+}
+
+void Collider2D::Disabled() {
+    _lettuce->OnPositionChanged()->RemoveCallback(_callbackID);
+    Collision2DQuadTree* system = LettuceEngine::Engine::GetInstance()->CollisionSystem();
+    system->Remove(this);
+}
+
+void Collider2D::PositionChange(bool hasChanged) {
+    Collision2DQuadTree* system = LettuceEngine::Engine::GetInstance()->CollisionSystem();
+    if (hasChanged)
+        system->Insert(this);
+    else
+        system->Remove(this);
+}
+
+const LettuceEngine::CollisionSystem::AABB Collider2D::GetBox() const {
+    return _box;
+}
+
+void Collider2D::SetBox(LettuceEngine::CollisionSystem::AABB box) {
+    _box = box;
+}
+
+void Collider2D::Render(RenderMessage* msg) {
+    BasicDrawing::DrawRectangleLines(_box.GetOffset() + _lettuce->Position(), Color(0, 255, 0, 255), _box.GetHalfSize());
+}
+
+bool Collider2D::Contains(const Collider2D* other) const {
+    return _box.ContainsAABB(other->_box, _lettuce->Position(), other->_lettuce->Position());
+}
+
+bool Collider2D::Contains(const LettuceEngine::CollisionSystem::AABB box) const {
+    return _box.ContainsAABB(box, _lettuce->Position(), Vector2());
+}
+
+bool Collider2D::Contains(const Vector2 point) const {
+    return _box.ContainsPoint(point, _lettuce->Position());
+}
+
+bool Collider2D::Intersects(const Collider2D* other) const {
+    return _box.IntersectsAABB(other->_box, _lettuce->Position(), other->_lettuce->Position());
+}
+
+bool Collider2D::Intersects(const LettuceEngine::CollisionSystem::AABB box) const {
+    return _box.IntersectsAABB(box, _lettuce->Position(), Vector2());
+}
+
+bool Collider2D::ContainedWithin(const LettuceEngine::CollisionSystem::AABB other) const {
+    return other.ContainsAABB(_box, Vector2(), _lettuce->Position());
+}
+
+void Collider2D::SaveToJson(json& j) {
+    Component::SaveToJson(j);
+    j["boundingBox"] = _box;
+}
+
+void Collider2D::LoadFromJson(const json& j) {
+    _box = j.at("boundingBox");
+    Component::LoadFromJson(j);
+}

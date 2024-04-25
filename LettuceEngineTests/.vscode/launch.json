@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug Source",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}\\bin\\Test.exe",
+        "args": ["--reporter", "JUnit::out=result-junit.xml", "--reporter console::out=-::colour-mode=ansi"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}\\bin",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "Build Test Executable"
+      }
+    ]
+  }
