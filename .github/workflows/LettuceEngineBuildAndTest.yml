@@ -27,6 +27,5 @@ jobs:
       with:
         report_paths: result-junit.xml
         fail_on_failure: true
-        detailed_summary: true
         require_tests: true
 
