@@ -29,4 +29,6 @@ jobs:
         fail_on_failure: true
         require_tests: true
         annotate_only: true
+        include_passed: true
+        detailed_summary: true
 
