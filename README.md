@@ -2,8 +2,10 @@
 
 *Behold, I present onto thee into our noble Lettuce Kingdom*
 
+[![Windows Build & Test](https://github.com/TheKingOfLettuce/LettuceEngine/actions/workflows/LettuceEngineBuildAndTest.yml/badge.svg)](https://github.com/TheKingOfLettuce/LettuceEngine/actions/workflows/LettuceEngineBuildAndTest.yml)
+
 ## Introduction
-The Lettuce Engine, a game engine wrapper around [raylib](https://github.com/raysan5/raylib). A huge amount of credit goes towards raylib and its contributors, it does a lot of the heavy lifting. This engine serves as a way to design applications or games within a framework, while leveraging the easy and power of raylib.
+The Lettuce Engine, a game engine wrapper around [raylib](https://github.com/raysan5/raylib). A huge amount of credit goes towards raylib and its contributors, it does a lot of the heavy lifting. This engine serves as a way to design applications or games within a framework, while leveraging the ease and power of raylib.
 
 By no means is this a finished product, and I can almost guarantee it won't be something that is ever finished. But hey, at least I have a readme.
 
@@ -19,7 +21,9 @@ As mentioned above, `Components` are what give things behavior within engine, su
 The engine will come with a static utility called the `MessageBus` and can serve as the main form of communication within the full system. Engine messages, update messages, rendering messages, or even custom messages can be subscribed to, allowing for even more behavior when certain events happen.
 
 ### JSON Serialization
-The main way `LettuceObjects` and `Components` save is via JSON. A `LettuceObject` will save everything about the object, including its components and its children. It saves to a JSON file, allowing you to restore an object to its full construction. There are provided `ComponentFactory` functions to register your custom `Component` to the save system.
+The main way `LettuceObjects` and `Components` save is via JSON. A `LettuceObject` will save everything about the object, including its `Components` and its children. It saves to a JSON file, allowing you to restore an object to its full construction. There are provided `ComponentFactory` functions to register your custom `Component` to the save system.
+
+[nlohmann's JSON Library](https://github.com/nlohmann/json) is used for Serialization and Deserialization.
 
 ## Building
 `Makefile`. It has two commands. 
