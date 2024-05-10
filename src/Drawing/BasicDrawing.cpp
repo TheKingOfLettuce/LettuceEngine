@@ -1,7 +1,7 @@
 #include "Drawing/BasicDrawing.h"
 #include "Raylib/raylib.h"
 #include "Engine.h"
-#include "Assets/AssetManager.h"
+#include "Assets/RaylibAssetManager.h"
 #include "Utils/RaylibExtentions/StructureConversions.h"
 
 using LColor = LettuceEngine::Math::Color;
@@ -64,7 +64,7 @@ void BasicDrawing::DrawText(const std::string text, const LVector2& point, float
 void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
-    Texture2D tex = StructureConversion::ToRaylibTexture2D(AssetManager::GetTexture2DData(texture));
+    Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);
     ::DrawTexture(tex, point.X, point.Y, c);
 }
 

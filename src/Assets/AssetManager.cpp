@@ -1,12 +1,11 @@
 #include "Assets/AssetManager.h"
 #include "Raylib/raylib.h"
 #include "Utils/RaylibExtentions/StructureConversions.h"
+#include "Assets/RaylibAssetManager.h"
 #include <unordered_map>
-
-static std::unordered_map<std::string, ImageData*> _imageData = std::unordered_map<std::string, ImageData*>(); 
+ 
 static std::unordered_map<std::string, ImageAsset*> _imageAssets = std::unordered_map<std::string, ImageAsset*>();
 
-static std::unordered_map<std::string, Texture2DData*> _texture2DData = std::unordered_map<std::string, Texture2DData*>(); 
 static std::unordered_map<std::string, Texture2DAsset*> _texture2DAssets = std::unordered_map<std::string, Texture2DAsset*>();
 
 bool AssetManager::AddImageAsset(ImageAsset* asset) {
@@ -16,12 +15,21 @@ bool AssetManager::AddImageAsset(ImageAsset* asset) {
     }
 
     _imageAssets.emplace(asset->GetAssetID(), asset);
-    _imageData.emplace(asset->GetAssetID(), StructureConversion::ToLettuceImage(::LoadImage(asset->GetFilePath().c_str())));
+    RaylibAssetManager::AddImageAsset(asset);
     return true;
 }
 
-ImageAsset* AssetManager::RemoveImageAsset(ImageAsset* asset) {
-    return RemoveImageAsset(asset->GetAssetID());
+ImageAsset* AssetManager::GetImageAsset(std::string id) {
+    if (_imageAssets.find(id) == _imageAssets.end()) {
+        // DNE
+        return nullptr;
+    }
+
+    return _imageAssets.at(id);
+}
+
+bool AssetManager::RemoveImageAsset(ImageAsset* asset) {
+    return RemoveImageAsset(asset->GetAssetID()) != nullptr;
 }
 
 ImageAsset* AssetManager::RemoveImageAsset(std::string id) {
@@ -29,25 +37,15 @@ ImageAsset* AssetManager::RemoveImageAsset(std::string id) {
         return nullptr;
     }
 
-    ImageData* image = _imageData.at(id);
     ImageAsset* toReturn = _imageAssets.at(id);
     _imageAssets.erase(id);
-    _imageData.erase(id);
-    ::UnloadImage(StructureConversion::ToRaylibImage(image));
+    RaylibAssetManager::RemoveImageData(id);
 
     return toReturn;
 }
 
-const ImageData* AssetManager::GetImageData(ImageAsset* asset) {
-    return GetImageData(asset->GetAssetID());
-}
-
-const ImageData* AssetManager::GetImageData(std::string id) {
-    if (_imageData.find(id) == _imageData.end()) {
-        return nullptr;
-    }
-
-    return _imageData.at(id);
+bool AssetManager::HasImageAsset(ImageAsset* asset) {
+    return _imageAssets.find(asset->GetAssetID()) != _imageAssets.end();
 }
 
 bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
@@ -57,22 +55,21 @@ bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
     }
 
     _texture2DAssets.emplace(asset->GetAssetID(), asset);
-    bool removeImageAfter = false;
-    if (_imageData.find(asset->GetImageAsset()->GetAssetID()) == _imageData.end()) {
-        removeImageAfter = true;
-        AddImageAsset(asset->GetImageAsset());
-    }
-    Image imageData = StructureConversion::ToRaylibImage(GetImageData(asset->GetImageAsset()));
-    Texture2D rayTex = ::LoadTextureFromImage(imageData);
-    _texture2DData.emplace(asset->GetAssetID(), StructureConversion::ToLettuceTexture2D(rayTex));
-    if (removeImageAfter) {
-        RemoveImageAsset(asset->GetImageAsset());
-    }
+    RaylibAssetManager::AddTexture2DAsset(asset);
     return true;
 }
 
-Texture2DAsset* AssetManager::RemoveTexture2DAsset(Texture2DAsset* asset) {
-    return RemoveTexture2DAsset(asset->GetAssetID());
+Texture2DAsset* AssetManager::GetTexture2DAsset(std::string id) {
+    if (_texture2DAssets.find(id) == _texture2DAssets.end()) {
+        // DNE
+        return nullptr;
+    }
+
+    return _texture2DAssets.at(id);
+}
+
+bool AssetManager::RemoveTexture2DAsset(Texture2DAsset* asset) {
+    return RemoveTexture2DAsset(asset->GetAssetID()) != nullptr;
 }
 
 Texture2DAsset* AssetManager::RemoveTexture2DAsset(std::string id) {
@@ -81,24 +78,14 @@ Texture2DAsset* AssetManager::RemoveTexture2DAsset(std::string id) {
     }
 
     Texture2DAsset* toReturn = _texture2DAssets.at(id);
-    Texture2DData* data = _texture2DData.at(id);
     _texture2DAssets.erase(id);
-    _texture2DData.erase(id);
-    ::UnloadTexture(StructureConversion::ToRaylibTexture2D(data));
+    RaylibAssetManager::RemoveTexture2DData(id);
 
     return toReturn;
 }
 
-const Texture2DData* AssetManager::GetTexture2DData(Texture2DAsset* asset) {
-    return GetTexture2DData(asset->GetAssetID());
-}
-
-const Texture2DData* AssetManager::GetTexture2DData(std::string id) {
-    if (_texture2DData.find(id) == _texture2DData.end()) {
-        return nullptr;
-    }
-
-    return _texture2DData.at(id);
+bool AssetManager::HasTexture2DAsset(Texture2DAsset* asset) {
+    return _texture2DAssets.find(asset->GetAssetID()) != _texture2DAssets.end();
 }
 
 void AssetManager::UnloadAllData() {
@@ -107,6 +94,7 @@ void AssetManager::UnloadAllData() {
 }
 
 void AssetManager::UnloadAllImageData() {
+    RaylibAssetManager::RemoveAllImageData();
     while (!_imageAssets.empty()) {
         ImageAsset* asset = _imageAssets.begin().operator*().second;
         RemoveImageAsset(asset);
@@ -115,6 +103,7 @@ void AssetManager::UnloadAllImageData() {
 }
 
 void AssetManager::UnloadAllTexture2DData() {
+    RaylibAssetManager::RemoveAllTexture2DData();
     while (!_texture2DAssets.empty()) {
         Texture2DAsset* asset = _texture2DAssets.begin().operator*().second;
         RemoveTexture2DAsset(asset);
