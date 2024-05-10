@@ -34,4 +34,8 @@ class AssetManager {
 
         static const Texture2DData* GetTexture2DData(Texture2DAsset* asset);
         static const Texture2DData* GetTexture2DData(std::string id);
+
+        static void UnloadAllData();
+        static void UnloadAllTexture2DData();
+        static void UnloadAllImageData();
 };

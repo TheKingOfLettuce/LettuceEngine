@@ -5,6 +5,7 @@
 #include "MessageSystem/Messages/EngineMessages.h"
 #include "Logging/Log.h"
 #include <stdexcept>
+#include "Assets/AssetManager.h"
 
 using LettuceEngine::Engine;
 
@@ -78,7 +79,8 @@ void Engine::MainLoop() {
         UpdateStep();
         RenderStep();
     }
-
+    MessageBus::Publish(new EngineHalting());
+    AssetManager::UnloadAllData();
     ::CloseWindow();
     _isRunning = false;
 }

@@ -10,7 +10,7 @@ static std::unordered_map<std::string, Texture2DData*> _texture2DData = std::uno
 static std::unordered_map<std::string, Texture2DAsset*> _texture2DAssets = std::unordered_map<std::string, Texture2DAsset*>();
 
 bool AssetManager::AddImageAsset(ImageAsset* asset) {
-    if (_imageAssets.find(asset->GetAssetID()) == _imageAssets.end()) {
+    if (_imageAssets.find(asset->GetAssetID()) != _imageAssets.end()) {
         // collision
         return false;
     }
@@ -51,7 +51,7 @@ const ImageData* AssetManager::GetImageData(std::string id) {
 }
 
 bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
-    if (_texture2DAssets.find(asset->GetAssetID()) == _texture2DAssets.end()) {
+    if (_texture2DAssets.find(asset->GetAssetID()) != _texture2DAssets.end()) {
         // collision
         return false;
     }
@@ -62,7 +62,8 @@ bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
         removeImageAfter = true;
         AddImageAsset(asset->GetImageAsset());
     }
-    Texture2D rayTex = ::LoadTextureFromImage(StructureConversion::ToRaylibImage(GetImageData(asset->GetImageAsset())));
+    Image imageData = StructureConversion::ToRaylibImage(GetImageData(asset->GetImageAsset()));
+    Texture2D rayTex = ::LoadTextureFromImage(imageData);
     _texture2DData.emplace(asset->GetAssetID(), StructureConversion::ToLettuceTexture2D(rayTex));
     if (removeImageAfter) {
         RemoveImageAsset(asset->GetImageAsset());
@@ -98,4 +99,25 @@ const Texture2DData* AssetManager::GetTexture2DData(std::string id) {
     }
 
     return _texture2DData.at(id);
+}
+
+void AssetManager::UnloadAllData() {
+    UnloadAllTexture2DData();
+    UnloadAllImageData();
+}
+
+void AssetManager::UnloadAllImageData() {
+    while (!_imageAssets.empty()) {
+        ImageAsset* asset = _imageAssets.begin().operator*().second;
+        RemoveImageAsset(asset);
+        delete asset;
+    }
+}
+
+void AssetManager::UnloadAllTexture2DData() {
+    while (!_texture2DAssets.empty()) {
+        Texture2DAsset* asset = _texture2DAssets.begin().operator*().second;
+        RemoveTexture2DAsset(asset);
+        delete asset;
+    }
 }

@@ -4,3 +4,5 @@
 class EngineReady : public MessageBase {
 
 };
+
+class EngineHalting : public MessageBase {};
