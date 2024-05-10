@@ -1,6 +1,7 @@
 #pragma once
-#include "Component.h"
-#include "Assets/ImageAsset.h"
+#include "Components/Component.h"
+#include "Assets/Texture2DAsset.h"
+#include "Math/Color.h"
 
 class ImageRenderer : public Component {
     public:
@@ -9,8 +10,13 @@ class ImageRenderer : public Component {
 
         void Render(RenderMessage* message) override;
 
-        void SetImage(ImageAsset* image);
+        void SetTexture(Texture2DAsset* image);
+        Texture2DAsset* GetTexture();
+
+        void SetColor(LettuceEngine::Math::Color color);
+        LettuceEngine::Math::Color GetColor();
 
     private:
-        ImageAsset* _image;
+        Texture2DAsset* _texture;
+        LettuceEngine::Math::Color _color;
 };

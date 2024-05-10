@@ -1,9 +1,13 @@
 #include "Assets/AssetManager.h"
 #include "Raylib/raylib.h"
+#include "Utils/RaylibExtentions/StructureConversions.h"
 #include <unordered_map>
 
 static std::unordered_map<std::string, ImageData*> _imageData = std::unordered_map<std::string, ImageData*>(); 
-static std::unordered_map<std::string, ImageAsset*> _imageAssets = std::unordered_map<std::string, ImageAsset*>(); 
+static std::unordered_map<std::string, ImageAsset*> _imageAssets = std::unordered_map<std::string, ImageAsset*>();
+
+static std::unordered_map<std::string, Texture2DData*> _texture2DData = std::unordered_map<std::string, Texture2DData*>(); 
+static std::unordered_map<std::string, Texture2DAsset*> _texture2DAssets = std::unordered_map<std::string, Texture2DAsset*>();
 
 bool AssetManager::AddImageAsset(ImageAsset* asset) {
     if (_imageAssets.find(asset->GetAssetID()) == _imageAssets.end()) {
@@ -12,7 +16,7 @@ bool AssetManager::AddImageAsset(ImageAsset* asset) {
     }
 
     _imageAssets.emplace(asset->GetAssetID(), asset);
-    _imageData.emplace(asset->GetAssetID(), ToLettuceImage(::LoadImage(asset->GetFilePath().c_str())));
+    _imageData.emplace(asset->GetAssetID(), StructureConversion::ToLettuceImage(::LoadImage(asset->GetFilePath().c_str())));
     return true;
 }
 
@@ -29,7 +33,7 @@ ImageAsset* AssetManager::RemoveImageAsset(std::string id) {
     ImageAsset* toReturn = _imageAssets.at(id);
     _imageAssets.erase(id);
     _imageData.erase(id);
-    ::UnloadImage(ToRaylibImage(image));
+    ::UnloadImage(StructureConversion::ToRaylibImage(image));
 
     return toReturn;
 }
@@ -46,24 +50,52 @@ const ImageData* AssetManager::GetImageData(std::string id) {
     return _imageData.at(id);
 }
 
-Image ToRaylibImage(ImageData* data) {
-    Image toReturn;
-    toReturn.data = data->data;
-    toReturn.format = data->format;
-    toReturn.width = data->width;
-    toReturn.height = data->height;
-    toReturn.mipmaps = data->mipmaps;
+bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
+    if (_texture2DAssets.find(asset->GetAssetID()) == _texture2DAssets.end()) {
+        // collision
+        return false;
+    }
+
+    _texture2DAssets.emplace(asset->GetAssetID(), asset);
+    bool removeImageAfter = false;
+    if (_imageData.find(asset->GetImageAsset()->GetAssetID()) == _imageData.end()) {
+        removeImageAfter = true;
+        AddImageAsset(asset->GetImageAsset());
+    }
+    Texture2D rayTex = ::LoadTextureFromImage(StructureConversion::ToRaylibImage(GetImageData(asset->GetImageAsset())));
+    _texture2DData.emplace(asset->GetAssetID(), StructureConversion::ToLettuceTexture2D(rayTex));
+    if (removeImageAfter) {
+        RemoveImageAsset(asset->GetImageAsset());
+    }
+    return true;
+}
+
+Texture2DAsset* AssetManager::RemoveTexture2DAsset(Texture2DAsset* asset) {
+    return RemoveTexture2DAsset(asset->GetAssetID());
+}
+
+Texture2DAsset* AssetManager::RemoveTexture2DAsset(std::string id) {
+    if (_texture2DAssets.find(id) == _texture2DAssets.end()) {
+        return nullptr;
+    }
+
+    Texture2DAsset* toReturn = _texture2DAssets.at(id);
+    Texture2DData* data = _texture2DData.at(id);
+    _texture2DAssets.erase(id);
+    _texture2DData.erase(id);
+    ::UnloadTexture(StructureConversion::ToRaylibTexture2D(data));
 
     return toReturn;
 }
 
-ImageData* ToLettuceImage(Image data) {
-    ImageData* toReturn = new ImageData();
-    toReturn->data = data.data;
-    toReturn->format = data.format;
-    toReturn->width = data.width;
-    toReturn->height = data.height;
-    toReturn->mipmaps = data.mipmaps;
+const Texture2DData* AssetManager::GetTexture2DData(Texture2DAsset* asset) {
+    return GetTexture2DData(asset->GetAssetID());
+}
 
-    return toReturn;
+const Texture2DData* AssetManager::GetTexture2DData(std::string id) {
+    if (_texture2DData.find(id) == _texture2DData.end()) {
+        return nullptr;
+    }
+
+    return _texture2DData.at(id);
 }
