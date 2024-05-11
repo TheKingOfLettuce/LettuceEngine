@@ -5,6 +5,7 @@ using Color = LettuceEngine::Math::Color;
 
 ImageRenderer::ImageRenderer() : Component() {
     _color = Color();
+    _texture = nullptr;
 }
 ImageRenderer::~ImageRenderer() {}
 
@@ -27,6 +28,7 @@ Color ImageRenderer::GetColor() {
 void ImageRenderer::Render(RenderMessage* message) {
     if (_texture == nullptr) {
         BasicDrawing::DrawRectangle(_lettuce->Position(), _color, LettuceEngine::Math::Vector2(50, 50));
+        return;
     }
     BasicDrawing::DrawTexture(_lettuce->Position(), _texture, _color);
 }
