@@ -18,7 +18,7 @@ static unsigned int _windowWidth;
 static unsigned int _windowHeight;
 static std::string _windowName;
 static unsigned int _fps;
-static bool _isRunning;
+static bool _isRunning = false;
 static std::thread _loopThread;
 static LettuceEngine::InputSystem _input = LettuceEngine::InputSystem();
 static LettuceObject* _root = new LettuceObject();
@@ -43,7 +43,7 @@ void RenderStep() {
 void MainLoop() {
     Log::Info("Initializing main window");
     ::SetTargetFPS(_fps);
-    ::InitWindow(_windowWidth, _windowHeight, _windowName.data());
+    ::InitWindow(_windowWidth, _windowHeight, _windowName.c_str());
     Log::Info("Window Initialized");
     MessageBus::Publish(new EngineReady());
     Log::Info("Starting main loop");
@@ -72,6 +72,15 @@ void Engine::SetWindowFps(unsigned int fps) {
     _fps = fps;
     if (_isRunning)
         ::SetTargetFPS(_fps);
+}
+
+void NoRaylibLog(int msgType, const char* text, va_list args) {return;}
+
+void Engine::ToggleRaylibLogs(bool flag) {
+    if (flag)
+        ::SetTraceLogCallback(Log::CustomRayLibLog);
+    else
+        ::SetTraceLogCallback(NoRaylibLog);
 }
 
 void Engine::LoadObject(LettuceObject* obj) {
