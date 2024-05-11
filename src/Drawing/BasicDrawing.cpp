@@ -2,7 +2,6 @@
 #include "Raylib/raylib.h"
 #include "Engine.h"
 #include "Assets/RaylibAssetManager.h"
-#include "Utils/RaylibExtentions/StructureConversions.h"
 
 using LColor = LettuceEngine::Math::Color;
 using LVector2 = LettuceEngine::Math::Vector2;
@@ -14,9 +13,7 @@ RColor ConvertEngineColor(const LColor& color) {
 }
 
 bool CanDraw() {
-    LettuceEngine::Engine* engine = LettuceEngine::Engine::GetInstance();
-    if (engine == nullptr) return false;
-    return engine->IsRunning();
+    return LettuceEngine::Engine::IsRunning();
 }
 
 void BasicDrawing::DrawPixel(const LVector2& point, const LColor& color) {

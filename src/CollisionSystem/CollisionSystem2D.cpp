@@ -152,6 +152,21 @@ std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(Vector2 
     return results;
 }
 
+std::unordered_set<Collider2D*>* Collision2DQuadTree::GetAllObjects(std::unordered_set<Collider2D*>* results) {
+    if (results == nullptr) {
+        results = new std::unordered_set<Collider2D*>();
+    }
+    for (Collider2D* obj: _objects) {
+        results->insert(obj);
+    }
+    if (IsLeaf())
+        return results;
+    for (int i = 0; i < 4; i++) {
+        _children[i]->GetAllObjects(results);
+    }
+    return results;
+}
+
 void Collision2DQuadTree::Unsplit() {
     for(int i = 0; i < 4; i++) {
         delete _children[i];
