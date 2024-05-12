@@ -1,7 +1,7 @@
 #include "Drawing/BasicDrawing.h"
 #include "Raylib/raylib.h"
 #include "Engine.h"
-#include "Assets/RaylibAssetManager.h"
+#include "Assets/Managers/RaylibAssetManager.h"
 
 using LColor = LettuceEngine::Math::Color;
 using LVector2 = LettuceEngine::Math::Vector2;

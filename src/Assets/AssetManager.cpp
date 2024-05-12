@@ -1,6 +1,5 @@
-#include "Assets/AssetManager.h"
-#include "Raylib/raylib.h"
-#include "Assets/RaylibAssetManager.h"
+#include "Assets/Managers/AssetManager.h"
+#include "Assets/Managers/RaylibAssetManager.h"
 #include <unordered_map>
  
 static std::unordered_map<std::string, ImageAsset*> _imageAssets = std::unordered_map<std::string, ImageAsset*>();

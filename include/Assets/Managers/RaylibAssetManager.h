@@ -2,7 +2,7 @@
 #include "Raylib/raylib.h"
 #include "Assets/ImageAsset.h"
 #include "Assets/Texture2DAsset.h"
-#include "Assets/AssetManager.h"
+#include "Assets/Managers/AssetManager.h"
 
 class RaylibAssetManager {
     friend AssetManager;

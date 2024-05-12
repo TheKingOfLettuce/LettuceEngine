@@ -7,8 +7,7 @@
 #include <stdexcept>
 #include <mutex>
 #include <thread>
-#include "Assets/AssetManager.h"
-#include "Assets/RaylibAssetManager.h"
+#include "Assets/Managers/AssetManager.h"
 #include "Input/InputSystem.h"
 
 using LettuceEngine::Engine;
