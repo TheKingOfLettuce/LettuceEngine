@@ -6,7 +6,7 @@ static std::unordered_map<std::string, Image> _imageData = std::unordered_map<st
 static std::unordered_map<std::string, Texture2D> _texture2DData = std::unordered_map<std::string, Texture2D>();
 
 bool RaylibAssetManager::AddImageAsset(ImageAsset* asset) {
-    if (_imageData.find(asset->GetAssetID()) != _imageData.end()) {
+    if (HasImageData(asset->GetAssetID())) {
         // collision
         return false;
     }
@@ -20,13 +20,13 @@ bool RaylibAssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
         throw new std::runtime_error("LettuceEngine is not running, cannot add Texture2D data");
     }
 
-    if (_texture2DData.find(asset->GetAssetID()) != _texture2DData.end()) {
+    if (HasTexture2DData(asset->GetAssetID())) {
         // collision
         return false;
     }
 
     bool removeImageAfter = false;
-    if (_imageData.find(asset->GetImageAsset()->GetAssetID()) == _imageData.end()) {
+    if (!HasImageData(asset->GetImageAsset())) {
         removeImageAfter = true;
         AddImageAsset(asset->GetImageAsset());
     }
@@ -43,7 +43,7 @@ void RaylibAssetManager::RemoveImageData(ImageAsset* asset) {
 }
 
 void RaylibAssetManager::RemoveImageData(std::string id) {
-    if (_imageData.find(id) == _imageData.end()) {
+    if (!HasImageData(id)) {
         return;
     }
 
@@ -62,7 +62,7 @@ void RaylibAssetManager::RemoveTexture2DData(std::string id) {
         throw new std::runtime_error("LettuceEngine is not running, cannot unload Texture2D data");
     }
 
-    if (_texture2DData.find(id) == _texture2DData.end()) {
+    if (!HasTexture2DData(id)) {
         return;
     }
 
@@ -77,7 +77,7 @@ Image RaylibAssetManager::GetImageData(ImageAsset* asset) {
 }
 
 Image RaylibAssetManager::GetImageData(std::string id) {
-    if (_imageData.find(id) == _imageData.end()) {
+    if (!HasImageData(id)) {
         throw std::runtime_error("Raylib image data is not loaded yet for: " + id);
     }
 
@@ -93,11 +93,27 @@ Texture2D RaylibAssetManager::GetTexture2DData(std::string id) {
         throw new std::runtime_error("LettuceEngine is not running, cannot get Texture2D data");
     }
 
-    if (_texture2DData.find(id) == _texture2DData.end()) {
+    if (!HasTexture2DData(id)) {
         throw std::runtime_error("Raylib Texture2D data is not loaded yet for: " + id);
     }
 
     return _texture2DData.at(id);
+}
+
+bool RaylibAssetManager::HasImageData(ImageAsset* asset) {
+    return HasImageData(asset->GetAssetID());
+}
+
+bool RaylibAssetManager::HasImageData(std::string id) {
+    return _imageData.find(id) != _imageData.end();
+}
+
+bool RaylibAssetManager::HasTexture2DData(Texture2DAsset* asset) {
+    return HasTexture2DData(asset->GetAssetID());
+}
+
+bool RaylibAssetManager::HasTexture2DData(std::string id) {
+    return _texture2DData.find(id) != _texture2DData.end();
 }
 
 void RaylibAssetManager::RemoveAllData() {

@@ -10,9 +10,13 @@ class RaylibAssetManager {
     public:
         static Image GetImageData(ImageAsset* asset);
         static Image GetImageData(std::string id);
+        static bool HasImageData(ImageAsset* asset);
+        static bool HasImageData(std::string id);
 
         static Texture2D GetTexture2DData(Texture2DAsset* asset);
-        static Texture2D GetTexture2DData(std::string id);       
+        static Texture2D GetTexture2DData(std::string id); 
+        static bool HasTexture2DData(Texture2DAsset* asset);
+        static bool HasTexture2DData(std::string id);      
 
     private:
         static bool AddImageAsset(ImageAsset* asset);
