@@ -1,29 +1,24 @@
 #include "Assets/Managers/AssetManager.h"
 #include "Assets/Managers/RaylibAssetManager.h"
 #include <unordered_map>
+#include "Assets/Managers/AssetCollection.h"
  
-static std::unordered_map<std::string, ImageAsset*> _imageAssets = std::unordered_map<std::string, ImageAsset*>();
+// static std::unordered_map<std::string, ImageAsset*> _imageAssets = std::unordered_map<std::string, ImageAsset*>();
 
-static std::unordered_map<std::string, Texture2DAsset*> _texture2DAssets = std::unordered_map<std::string, Texture2DAsset*>();
+// static std::unordered_map<std::string, Texture2DAsset*> _texture2DAssets = std::unordered_map<std::string, Texture2DAsset*>();
+
+static AssetCollection<ImageAsset*> _imageAssets = AssetCollection<ImageAsset*>();
+static AssetCollection<Texture2DAsset*> _texture2DAssets = AssetCollection<Texture2DAsset*>();
 
 bool AssetManager::AddImageAsset(ImageAsset* asset) {
-    if (_imageAssets.find(asset->GetAssetID()) != _imageAssets.end()) {
-        // collision
-        return false;
-    }
-
-    _imageAssets.emplace(asset->GetAssetID(), asset);
-    RaylibAssetManager::AddImageAsset(asset);
-    return true;
+    bool added = _imageAssets.AddAsset(asset);
+    if (added)
+        RaylibAssetManager::AddImageAsset(asset);
+    return added;
 }
 
 ImageAsset* AssetManager::GetImageAsset(std::string id) {
-    if (_imageAssets.find(id) == _imageAssets.end()) {
-        // DNE
-        return nullptr;
-    }
-
-    return _imageAssets.at(id);
+    return _imageAssets.GetAsset(id);
 }
 
 bool AssetManager::RemoveImageAsset(ImageAsset* asset) {
@@ -31,40 +26,29 @@ bool AssetManager::RemoveImageAsset(ImageAsset* asset) {
 }
 
 ImageAsset* AssetManager::RemoveImageAsset(std::string id) {
-    if (_imageAssets.find(id) == _imageAssets.end()) {
-        return nullptr;
-    }
-
-    ImageAsset* toReturn = _imageAssets.at(id);
-    _imageAssets.erase(id);
-    RaylibAssetManager::RemoveImageData(id);
-
+    ImageAsset* toReturn = _imageAssets.RemoveAsset(id);
+    if (toReturn != nullptr)
+        RaylibAssetManager::RemoveImageData(id);
     return toReturn;
 }
 
 bool AssetManager::HasImageAsset(ImageAsset* asset) {
-    return _imageAssets.find(asset->GetAssetID()) != _imageAssets.end();
+    return _imageAssets.HasAsset(asset);
+}
+
+bool AssetManager::HasImageAsset(std::string id) {
+    return _imageAssets.HasAsset(id);
 }
 
 bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
-    if (_texture2DAssets.find(asset->GetAssetID()) != _texture2DAssets.end()) {
-        // collision
-        return false;
-    }
-
-    _texture2DAssets.emplace(asset->GetAssetID(), asset);
-    if (LettuceEngine::Engine::IsRunning())
+    bool added = _texture2DAssets.AddAsset(asset);
+    if (added && LettuceEngine::Engine::IsRunning())
         RaylibAssetManager::AddTexture2DAsset(asset);
-    return true;
+    return added;
 }
 
 Texture2DAsset* AssetManager::GetTexture2DAsset(std::string id) {
-    if (_texture2DAssets.find(id) == _texture2DAssets.end()) {
-        // DNE
-        return nullptr;
-    }
-
-    return _texture2DAssets.at(id);
+    return _texture2DAssets.GetAsset(id);
 }
 
 bool AssetManager::RemoveTexture2DAsset(Texture2DAsset* asset) {
@@ -72,20 +56,18 @@ bool AssetManager::RemoveTexture2DAsset(Texture2DAsset* asset) {
 }
 
 Texture2DAsset* AssetManager::RemoveTexture2DAsset(std::string id) {
-    if (_texture2DAssets.find(id) == _texture2DAssets.end()) {
-        return nullptr;
-    }
-
-    Texture2DAsset* toReturn = _texture2DAssets.at(id);
-    _texture2DAssets.erase(id);
-    if (LettuceEngine::Engine::IsRunning())
+    Texture2DAsset* toReturn = _texture2DAssets.RemoveAsset(id);
+    if (toReturn != nullptr && LettuceEngine::Engine::IsRunning())
         RaylibAssetManager::RemoveTexture2DData(id);
-
     return toReturn;
 }
 
 bool AssetManager::HasTexture2DAsset(Texture2DAsset* asset) {
-    return _texture2DAssets.find(asset->GetAssetID()) != _texture2DAssets.end();
+    return _texture2DAssets.HasAsset(asset);
+}
+
+bool AssetManager::HasTexture2DAsset(std::string id) {
+    return _texture2DAssets.HasAsset(id);
 }
 
 void AssetManager::LoadRaylibData() {

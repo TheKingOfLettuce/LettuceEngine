@@ -11,8 +11,8 @@ AssetCollection<T>::~AssetCollection() {
 }
 
 template <typename T>
-bool AssetCollection<T>::AddAsset(T* asset) {
-    std::string id = asset.GetAssetID();
+bool AssetCollection<T>::AddAsset(T asset) {
+    std::string id = asset->GetAssetID() // T must be base of Asset*;
     if (HasAsset(id)) {
         return false;
     }
@@ -27,7 +27,7 @@ bool AssetCollection<T>::RemoveAsset(Asset* asset) {
 }
 
 template <typename T>
-T* AssetCollection<T>::RemoveAsset(std::string id) {
+T AssetCollection<T>::RemoveAsset(std::string id) {
     if (!HasAsset(id)) {
         return nullptr;
     }
@@ -48,10 +48,18 @@ bool AssetCollection<T>::HasAsset(std::string id) {
 }
 
 template <typename T>
-T* AssetCollection<T>::GetAsset(std::string id) {
+T AssetCollection<T>::GetAsset(std::string id) {
     if (!HasAsset(id)) {
         return nullptr;
     }
 
     return _assets.at(id);
+}
+
+template <typename T>
+std::vector<T> AssetCollection<T>::GetAllAssets() {
+    std::vector<T> toReturn = std::vector<T>();
+    for (const auto& pair : _texture2DAssets) {
+        
+    }
 }
