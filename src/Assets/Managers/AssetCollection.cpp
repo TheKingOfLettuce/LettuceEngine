@@ -1,18 +1,13 @@
 #include "Assets/Managers/AssetCollection.h"
 
-template <typename T>
-AssetCollection<T>::AssetCollection() {
-    _assets = std::unordered_map<std::string, T*>();
+AssetCollection::AssetCollection() {
+    _assets = std::unordered_map<std::string, Asset*>();
 }
 
-template <typename T>
-AssetCollection<T>::~AssetCollection() {
+AssetCollection::~AssetCollection() {}
 
-}
-
-template <typename T>
-bool AssetCollection<T>::AddAsset(T asset) {
-    std::string id = asset->GetAssetID() // T must be base of Asset*;
+bool AssetCollection::AddAsset(Asset* asset) {
+    std::string id = asset->GetAssetID();
     if (HasAsset(id)) {
         return false;
     }
@@ -21,45 +16,14 @@ bool AssetCollection<T>::AddAsset(T asset) {
     return true;
 }
 
-template <typename T>
-bool AssetCollection<T>::RemoveAsset(Asset* asset) {
-    return RemoveAsset(asset->GetAssetID()) != nullptr;
+bool AssetCollection::RemoveAsset(Asset* asset) {
+    return RemoveAsset<Asset*>(asset->GetAssetID()) != nullptr;
 }
 
-template <typename T>
-T AssetCollection<T>::RemoveAsset(std::string id) {
-    if (!HasAsset(id)) {
-        return nullptr;
-    }
-
-    T* toReturn = _assets.at(id);
-    _assets.erase(id);
-    return toReturn;
-}
-
-template <typename T>
-bool AssetCollection<T>::HasAsset(Asset* asset) {
+bool AssetCollection::HasAsset(Asset* asset) {
     return HasAsset(asset->GetAssetID());
 }
 
-template <typename T>
-bool AssetCollection<T>::HasAsset(std::string id) {
+bool AssetCollection::HasAsset(std::string id) {
     return _assets.find(id) != _assets.end();
-}
-
-template <typename T>
-T AssetCollection<T>::GetAsset(std::string id) {
-    if (!HasAsset(id)) {
-        return nullptr;
-    }
-
-    return _assets.at(id);
-}
-
-template <typename T>
-std::vector<T> AssetCollection<T>::GetAllAssets() {
-    std::vector<T> toReturn = std::vector<T>();
-    for (const auto& pair : _texture2DAssets) {
-        
-    }
 }
