@@ -25,6 +25,9 @@ class AssetManager {
         static void UnloadAllImageAssets();
 
     private:
-        static void LoadAssetData();
-        static void LoadTexture2DData();
+        static void LoadRaylibData();
+        static void LoadTexture2DRaylibData();
+
+        static void UnloadRaylibData();
+        static void UnloadTexture2DRaylibData();
 };

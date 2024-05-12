@@ -47,7 +47,7 @@ void Engine::MainLoop() {
     ::InitWindow(_windowWidth, _windowHeight, _windowName.c_str());
     Log::Info("Window Initialized");
     // Load Assets into Raylib Data
-    AssetManager::LoadAssetData();
+    AssetManager::LoadRaylibData();
     MessageBus::Publish(new EngineReady());
     Log::Info("Starting main loop");
     while (!::WindowShouldClose() && _isRunning) {
@@ -58,7 +58,7 @@ void Engine::MainLoop() {
     }
     MessageBus::Publish(new EngineHalting());
     // Unload Raylib data that cannot persist after CloseWindow()
-    RaylibAssetManager::RemoveAllTexture2DData();
+    AssetManager::UnloadRaylibData();
     ::CloseWindow();
     _isRunning = false;
 }

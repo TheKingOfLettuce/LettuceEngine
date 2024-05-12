@@ -16,6 +16,10 @@ bool RaylibAssetManager::AddImageAsset(ImageAsset* asset) {
 }
 
 bool RaylibAssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
+    if (!LettuceEngine::Engine::IsRunning()) {
+        throw new std::runtime_error("LettuceEngine is not running, cannot add Texture2D data");
+    }
+
     if (_texture2DData.find(asset->GetAssetID()) != _texture2DData.end()) {
         // collision
         return false;

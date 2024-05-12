@@ -3,11 +3,9 @@
 #include "Assets/ImageAsset.h"
 #include "Assets/Texture2DAsset.h"
 #include "Assets/AssetManager.h"
-#include "Engine.h"
 
 class RaylibAssetManager {
     friend AssetManager;
-    friend LettuceEngine::Engine;
 
     public:
         static Image GetImageData(ImageAsset* asset);

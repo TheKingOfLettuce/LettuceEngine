@@ -89,18 +89,22 @@ bool AssetManager::HasTexture2DAsset(Texture2DAsset* asset) {
     return _texture2DAssets.find(asset->GetAssetID()) != _texture2DAssets.end();
 }
 
-void AssetManager::LoadAssetData() {
-    LoadTexture2DData();
+void AssetManager::LoadRaylibData() {
+    LoadTexture2DRaylibData();
 }
 
-void AssetManager::LoadTexture2DData() {
-    if (!LettuceEngine::Engine::IsRunning()) {
-        throw new std::runtime_error("Engine is not running, cannot load Texture2D data");
-    }
-
+void AssetManager::LoadTexture2DRaylibData() {
     for (const auto& pair : _texture2DAssets) {
         RaylibAssetManager::AddTexture2DAsset(pair.second);
     }
+}
+
+void AssetManager::UnloadRaylibData() {
+    UnloadTexture2DRaylibData();
+}
+
+void AssetManager::UnloadTexture2DRaylibData() {
+    RaylibAssetManager::RemoveAllTexture2DData();
 }
 
 void AssetManager::UnloadAllAssets() {
