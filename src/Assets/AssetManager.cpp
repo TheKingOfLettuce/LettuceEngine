@@ -54,7 +54,8 @@ bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
     }
 
     _texture2DAssets.emplace(asset->GetAssetID(), asset);
-    RaylibAssetManager::AddTexture2DAsset(asset);
+    if (LettuceEngine::Engine::IsRunning())
+        RaylibAssetManager::AddTexture2DAsset(asset);
     return true;
 }
 
@@ -78,7 +79,8 @@ Texture2DAsset* AssetManager::RemoveTexture2DAsset(std::string id) {
 
     Texture2DAsset* toReturn = _texture2DAssets.at(id);
     _texture2DAssets.erase(id);
-    RaylibAssetManager::RemoveTexture2DData(id);
+    if (LettuceEngine::Engine::IsRunning())
+        RaylibAssetManager::RemoveTexture2DData(id);
 
     return toReturn;
 }
@@ -87,13 +89,26 @@ bool AssetManager::HasTexture2DAsset(Texture2DAsset* asset) {
     return _texture2DAssets.find(asset->GetAssetID()) != _texture2DAssets.end();
 }
 
-void AssetManager::UnloadAllData() {
-    UnloadAllTexture2DData();
-    UnloadAllImageData();
+void AssetManager::LoadAssetData() {
+    LoadTexture2DData();
 }
 
-void AssetManager::UnloadAllImageData() {
-    RaylibAssetManager::RemoveAllImageData();
+void AssetManager::LoadTexture2DData() {
+    if (!LettuceEngine::Engine::IsRunning()) {
+        throw new std::runtime_error("Engine is not running, cannot load Texture2D data");
+    }
+
+    for (const auto& pair : _texture2DAssets) {
+        RaylibAssetManager::AddTexture2DAsset(pair.second);
+    }
+}
+
+void AssetManager::UnloadAllAssets() {
+    UnloadAllTexture2DAssets();
+    UnloadAllImageAssets();
+}
+
+void AssetManager::UnloadAllImageAssets() {
     while (!_imageAssets.empty()) {
         ImageAsset* asset = _imageAssets.begin().operator*().second;
         RemoveImageAsset(asset);
@@ -101,8 +116,7 @@ void AssetManager::UnloadAllImageData() {
     }
 }
 
-void AssetManager::UnloadAllTexture2DData() {
-    RaylibAssetManager::RemoveAllTexture2DData();
+void AssetManager::UnloadAllTexture2DAssets() {
     while (!_texture2DAssets.empty()) {
         Texture2DAsset* asset = _texture2DAssets.begin().operator*().second;
         RemoveTexture2DAsset(asset);

@@ -2,8 +2,11 @@
 
 #include "Assets/ImageAsset.h"
 #include "Assets/Texture2DAsset.h"
+#include "Engine.h"
 
 class AssetManager {
+    friend LettuceEngine::Engine;
+
     public:
         static bool AddImageAsset(ImageAsset* asset);
         static ImageAsset* GetImageAsset(std::string id);
@@ -17,7 +20,11 @@ class AssetManager {
         static Texture2DAsset* RemoveTexture2DAsset(std::string id);
         static bool HasTexture2DAsset(Texture2DAsset* asset);
 
-        static void UnloadAllData();
-        static void UnloadAllTexture2DData();
-        static void UnloadAllImageData();
+        static void UnloadAllAssets();
+        static void UnloadAllTexture2DAssets();
+        static void UnloadAllImageAssets();
+
+    private:
+        static void LoadAssetData();
+        static void LoadTexture2DData();
 };

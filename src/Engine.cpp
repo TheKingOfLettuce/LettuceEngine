@@ -8,6 +8,7 @@
 #include <mutex>
 #include <thread>
 #include "Assets/AssetManager.h"
+#include "Assets/RaylibAssetManager.h"
 #include "Input/InputSystem.h"
 
 using LettuceEngine::Engine;
@@ -40,11 +41,13 @@ void RenderStep() {
     ::EndDrawing();
 }
 
-void MainLoop() {
+void Engine::MainLoop() {
     Log::Info("Initializing main window");
     ::SetTargetFPS(_fps);
     ::InitWindow(_windowWidth, _windowHeight, _windowName.c_str());
     Log::Info("Window Initialized");
+    // Load Assets into Raylib Data
+    AssetManager::LoadAssetData();
     MessageBus::Publish(new EngineReady());
     Log::Info("Starting main loop");
     while (!::WindowShouldClose() && _isRunning) {
@@ -54,7 +57,8 @@ void MainLoop() {
         RenderStep();
     }
     MessageBus::Publish(new EngineHalting());
-    AssetManager::UnloadAllData();
+    // Unload Raylib data that cannot persist after CloseWindow()
+    RaylibAssetManager::RemoveAllTexture2DData();
     ::CloseWindow();
     _isRunning = false;
 }

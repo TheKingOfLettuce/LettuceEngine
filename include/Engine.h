@@ -19,6 +19,7 @@ namespace LettuceEngine {
             static void StopWindow();
             static void LoadObject(LettuceObject* obj);
             static void StartMainLoop();
+            static void MainLoop();
 
             static void WaitForMainLoopToExit();
     };

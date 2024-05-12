@@ -54,6 +54,10 @@ void RaylibAssetManager::RemoveTexture2DData(Texture2DAsset* asset) {
 }
 
 void RaylibAssetManager::RemoveTexture2DData(std::string id) {
+    if (!LettuceEngine::Engine::IsRunning()) {
+        throw new std::runtime_error("LettuceEngine is not running, cannot unload Texture2D data");
+    }
+
     if (_texture2DData.find(id) == _texture2DData.end()) {
         return;
     }
@@ -81,6 +85,10 @@ Texture2D RaylibAssetManager::GetTexture2DData(Texture2DAsset* asset) {
 }
 
 Texture2D RaylibAssetManager::GetTexture2DData(std::string id) {
+    if (!LettuceEngine::Engine::IsRunning()) {
+        throw new std::runtime_error("LettuceEngine is not running, cannot get Texture2D data");
+    }
+
     if (_texture2DData.find(id) == _texture2DData.end()) {
         throw std::runtime_error("Raylib Texture2D data is not loaded yet for: " + id);
     }
