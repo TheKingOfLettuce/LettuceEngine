@@ -1,10 +1,9 @@
 #include "Assets/Managers/AssetManager.h"
 #include "Assets/Managers/RaylibAssetManager.h"
-#include <unordered_map>
-#include "Assets/Managers/AssetCollection.h"
+#include "Assets/Managers/AssetTypeCollection.h"
  
-static AssetCollection _imageAssets = AssetCollection();
-static AssetCollection _texture2DAssets = AssetCollection();
+static AssetTypeCollection<ImageAsset> _imageAssets = AssetTypeCollection<ImageAsset>();
+static AssetTypeCollection<Texture2DAsset> _texture2DAssets = AssetTypeCollection<Texture2DAsset>();
 
 bool AssetManager::AddImageAsset(ImageAsset* asset) {
     bool added = _imageAssets.AddAsset(asset);
@@ -14,7 +13,7 @@ bool AssetManager::AddImageAsset(ImageAsset* asset) {
 }
 
 ImageAsset* AssetManager::GetImageAsset(std::string id) {
-    return _imageAssets.GetAsset<ImageAsset>(id);
+    return _imageAssets.GetAsset(id);
 }
 
 bool AssetManager::RemoveImageAsset(ImageAsset* asset) {
@@ -22,7 +21,7 @@ bool AssetManager::RemoveImageAsset(ImageAsset* asset) {
 }
 
 ImageAsset* AssetManager::RemoveImageAsset(std::string id) {
-    ImageAsset* toReturn = _imageAssets.RemoveAsset<ImageAsset>(id);
+    ImageAsset* toReturn = _imageAssets.RemoveAsset(id);
     if (toReturn != nullptr)
         RaylibAssetManager::RemoveImageData(id);
     return toReturn;
@@ -44,7 +43,7 @@ bool AssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
 }
 
 Texture2DAsset* AssetManager::GetTexture2DAsset(std::string id) {
-    return _texture2DAssets.GetAsset<Texture2DAsset>(id);
+    return _texture2DAssets.GetAsset(id);
 }
 
 bool AssetManager::RemoveTexture2DAsset(Texture2DAsset* asset) {
@@ -52,7 +51,7 @@ bool AssetManager::RemoveTexture2DAsset(Texture2DAsset* asset) {
 }
 
 Texture2DAsset* AssetManager::RemoveTexture2DAsset(std::string id) {
-    Texture2DAsset* toReturn = _texture2DAssets.RemoveAsset<Texture2DAsset>(id);
+    Texture2DAsset* toReturn = _texture2DAssets.RemoveAsset(id);
     if (toReturn != nullptr && LettuceEngine::Engine::IsRunning())
         RaylibAssetManager::RemoveTexture2DData(id);
     return toReturn;
@@ -71,7 +70,7 @@ void AssetManager::LoadRaylibData() {
 }
 
 void AssetManager::LoadTexture2DRaylibData() {
-    for(Texture2DAsset* asset : _texture2DAssets.GetAllAssets<Texture2DAsset>()) {
+    for(Texture2DAsset* asset : _texture2DAssets.GetAllAssets()) {
         RaylibAssetManager::AddTexture2DAsset(asset);
     }
 }
@@ -90,14 +89,14 @@ void AssetManager::UnloadAllAssets() {
 }
 
 void AssetManager::UnloadAllImageAssets() {
-    for(ImageAsset* asset : _imageAssets.GetAllAssets<ImageAsset>()) {
+    for(ImageAsset* asset : _imageAssets.GetAllAssets()) {
         RemoveImageAsset(asset);
         delete asset;
     }
 }
 
 void AssetManager::UnloadAllTexture2DAssets() {
-    for(Texture2DAsset* asset : _texture2DAssets.GetAllAssets<Texture2DAsset>()) {
+    for(Texture2DAsset* asset : _texture2DAssets.GetAllAssets()) {
         RemoveTexture2DAsset(asset);
         delete asset;
     }

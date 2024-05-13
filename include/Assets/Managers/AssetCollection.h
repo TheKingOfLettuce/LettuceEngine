@@ -6,39 +6,16 @@
 class AssetCollection {
     public:
         AssetCollection();
-        ~AssetCollection();
+        virtual ~AssetCollection();
 
         bool AddAsset(Asset* asset);
         bool RemoveAsset(Asset* asset);
-        template <typename T>
-        T* RemoveAsset(std::string id) {
-            if (!HasAsset(id)) {
-                return nullptr;
-            }
-
-            T* toReturn = static_cast<T*>(_assets.at(id));
-            _assets.erase(id);
-            return toReturn;
-        }
+        Asset* RemoveAsset(std::string);
         bool HasAsset(Asset* asset);
         bool HasAsset(std::string id);
-        template <typename T> 
-        T* GetAsset(std::string id) {
-            if (!HasAsset(id)) {
-                return nullptr;
-            }
+        Asset* GetAsset(std::string id);
+        std::vector<Asset*> GetAllAssets();
 
-            return static_cast<T*>(_assets.at(id));
-        }
-        template <typename T>
-        std::vector<T*> GetAllAssets() {
-            std::vector<T*> toReturn = std::vector<T*>();
-            for (const auto& pair : _assets) {
-                toReturn.push_back(static_cast<T*>(pair.second));
-            }
-
-            return toReturn;
-        }
-    private:
+    protected:
         std::unordered_map<std::string, Asset*> _assets;
 };

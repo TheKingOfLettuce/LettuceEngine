@@ -4,7 +4,7 @@
 class Asset {
     public:
         Asset(std::string id);
-        ~Asset();
+        virtual ~Asset();
 
         std::string GetAssetID();
     protected:
