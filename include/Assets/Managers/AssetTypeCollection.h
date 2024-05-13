@@ -3,6 +3,8 @@
 
 template <typename T>
 class AssetTypeCollection : public AssetCollection {
+    static_assert(std::is_base_of<Asset, T>{},
+    "AssetTypeCollection Type must be of type Asset");
     public:
         AssetTypeCollection() : AssetCollection() {}
         ~AssetTypeCollection() {}
@@ -11,25 +13,17 @@ class AssetTypeCollection : public AssetCollection {
             return AssetCollection::AddAsset(asset);
         }
 
-        bool AddAsset(Asset* asset) {
-            if (typeid(asset) == typeid(T*))
-                return false;
-            return AssetCollection::AddAsset(asset);
-        }
-
-        bool RemoveAsset(Asset* asset) {
-            if (typeid(asset) == typeid(T*))
-                return false;
-            return AssetCollection::RemoveAsset(asset);
-        }
-
-        bool HasAsset(Asset* asset) {
-            if (typeid(asset) == typeid(T*))
-                return false;
+        bool HasAsset(T* asset) {
             return AssetCollection::HasAsset(asset);
         }
 
-        using AssetCollection::HasAsset;
+        bool HasAsset(std::string id) {
+            return AssetCollection::HasAsset(id);
+        }
+
+        bool RemoveAsset(T* asset) {
+            return AssetCollection::RemoveAsset(asset);
+        }
 
         T* RemoveAsset(std::string id) {
             return static_cast<T*>(AssetCollection::RemoveAsset(id));

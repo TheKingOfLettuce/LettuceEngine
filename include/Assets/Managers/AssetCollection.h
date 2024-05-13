@@ -10,7 +10,7 @@ class AssetCollection {
 
         bool AddAsset(Asset* asset);
         bool RemoveAsset(Asset* asset);
-        Asset* RemoveAsset(std::string);
+        Asset* RemoveAsset(std::string id);
         bool HasAsset(Asset* asset);
         bool HasAsset(std::string id);
         Asset* GetAsset(std::string id);
