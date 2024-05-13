@@ -17,7 +17,7 @@ bool AssetCollection::AddAsset(Asset* asset) {
 }
 
 bool AssetCollection::RemoveAsset(Asset* asset) {
-    return RemoveAsset<Asset*>(asset->GetAssetID()) != nullptr;
+    return RemoveAsset<Asset>(asset->GetAssetID()) != nullptr;
 }
 
 bool AssetCollection::HasAsset(Asset* asset) {
