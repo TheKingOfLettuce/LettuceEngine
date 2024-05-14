@@ -1,7 +1,7 @@
 #include "Assets/Managers/AssetManager.h"
 #include "Assets/Managers/RaylibAssetManager.h"
 #include "Assets/Managers/AssetTypeCollection.h"
- 
+
 static AssetTypeCollection<ImageAsset> _imageAssets = AssetTypeCollection<ImageAsset>();
 static AssetTypeCollection<Texture2DAsset> _texture2DAssets = AssetTypeCollection<Texture2DAsset>();
 
@@ -101,3 +101,13 @@ void AssetManager::UnloadAllTexture2DAssets() {
         delete asset;
     }
 }
+
+bool AssetManager::HasAssetType(size_t typeID) {
+    return _assets.find(typeID) != _assets.end();
+}
+
+template <typename T>
+AssetManager::RaylibAssetCollection<T>::RaylibAssetCollection() : AssetTypeCollection<T>() {}
+
+template <typename T>
+AssetManager::RaylibAssetCollection<T>::~RaylibAssetCollection() {}

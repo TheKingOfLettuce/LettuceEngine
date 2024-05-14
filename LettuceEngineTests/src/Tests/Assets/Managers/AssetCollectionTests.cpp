@@ -3,18 +3,15 @@
 
 const char* AssetCollectionTAG = "[AssetCollection]";
 
-class TestAsset : public Asset {
-    public:
-        TestAsset(std::string id) : Asset(id) {}
-        ~TestAsset() {}
-};
-
 TEST_CASE("AssetCollection.AddAsset", AssetCollectionTAG) {
     SECTION("Should Add Assets") {
-
+        AssetCollection collection = AssetCollection();
+        REQUIRE(collection.AddAsset(new Asset("Asset1")));
+        REQUIRE(collection.AddAsset(new Asset("Asset2")));
+        REQUIRE(collection.AddAsset(new Asset("Asset3")));
     }
 
-    SECTION("Should Throw")
+    SECTION("Should Throw") { }
 }
 
 TEST_CASE("AssetCollection.RemoveAsset", AssetCollectionTAG) {

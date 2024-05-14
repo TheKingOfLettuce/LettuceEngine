@@ -4,7 +4,11 @@ AssetCollection::AssetCollection() {
     _assets = std::unordered_map<std::string, Asset*>();
 }
 
-AssetCollection::~AssetCollection() {}
+AssetCollection::~AssetCollection() {
+    for(const auto& pair : _assets) {
+        delete pair.second;
+    }
+}
 
 bool AssetCollection::AddAsset(Asset* asset) {
     std::string id = asset->GetAssetID();

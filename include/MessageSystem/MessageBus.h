@@ -15,7 +15,7 @@ class MessageBus {
                 _eventMap[messageType] = new MessageHandler<T>();
                
             MessageHandlerBase* handler = _eventMap[messageType];
-            MessageHandler<T>* actualHandler = dynamic_cast<MessageHandler<T>*>(handler);
+            MessageHandler<T>* actualHandler = static_cast<MessageHandler<T>*>(handler);
 
             actualHandler->AddCallback(callHandler);
         }
@@ -29,7 +29,7 @@ class MessageBus {
             // throws std::invalid_argument if instance or callback null
             CallbackHandler<T, I>* callHandler = new CallbackHandler<T, I>(instance, callback);
             MessageHandlerBase* handler = _eventMap[messageType];
-            MessageHandler<T>* actualHandler = dynamic_cast<MessageHandler<T>*>(handler);
+            MessageHandler<T>* actualHandler = static_cast<MessageHandler<T>*>(handler);
 
             actualHandler->RemoveCallback(callHandler);
         }
@@ -53,7 +53,7 @@ class MessageBus {
             }
 
             MessageHandlerBase* handler = _eventMap[messageType];
-            MessageHandler<T>* actualHandler = dynamic_cast<MessageHandler<T>*>(handler);
+            MessageHandler<T>* actualHandler = static_cast<MessageHandler<T>*>(handler);
 
             actualHandler->HandleCallback(message);
 
