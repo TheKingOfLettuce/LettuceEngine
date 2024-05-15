@@ -6,6 +6,8 @@
 
 class RaylibAssetManager {
     friend AssetManager;
+    friend ImageAssetCollection;
+    friend Texture2DAssetCollection;
 
     public:
         static Image GetImageData(ImageAsset* asset);

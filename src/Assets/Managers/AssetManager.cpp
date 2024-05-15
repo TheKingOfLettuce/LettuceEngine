@@ -2,6 +2,39 @@
 #include "Assets/Managers/RaylibAssetManager.h"
 #include "Assets/Managers/AssetTypeCollection.h"
 
+
+ImageAssetCollection::ImageAssetCollection() : AssetTypeCollection<ImageAsset>() {}
+
+bool ImageAssetCollection::AddAsset(ImageAsset* asset) {
+    bool added = AssetTypeCollection::AddAsset(asset);
+    if (added)
+        RaylibAssetManager::AddImageAsset(asset);
+    return added;
+}
+
+ImageAsset* ImageAssetCollection::RemoveAsset(std::string id) {
+    ImageAsset* removed = AssetTypeCollection::RemoveAsset(id);
+    if (removed)
+        RaylibAssetManager::RemoveImageData(id);
+    return removed;
+}
+
+Texture2DAssetCollection::Texture2DAssetCollection() : AssetTypeCollection<Texture2DAsset>() {}
+
+bool Texture2DAssetCollection::AddAsset(Texture2DAsset* asset) {
+    bool added = AssetTypeCollection::AddAsset(asset);
+    if (added && LettuceEngine::Engine::IsRunning())
+        RaylibAssetManager::AddTexture2DAsset(asset);
+    return added;
+}
+
+Texture2DAsset* Texture2DAssetCollection::RemoveAsset(std::string id) {
+    Texture2DAsset* removed = AssetTypeCollection::RemoveAsset(id);
+    if (removed)
+        RaylibAssetManager::RemoveTexture2DData(id);
+    return removed;
+}
+
 static AssetTypeCollection<ImageAsset> _imageAssets = AssetTypeCollection<ImageAsset>();
 static AssetTypeCollection<Texture2DAsset> _texture2DAssets = AssetTypeCollection<Texture2DAsset>();
 
@@ -105,9 +138,3 @@ void AssetManager::UnloadAllTexture2DAssets() {
 bool AssetManager::HasAssetType(size_t typeID) {
     return _assets.find(typeID) != _assets.end();
 }
-
-template <typename T>
-AssetManager::RaylibAssetCollection<T>::RaylibAssetCollection() : AssetTypeCollection<T>() {}
-
-template <typename T>
-AssetManager::RaylibAssetCollection<T>::~RaylibAssetCollection() {}
