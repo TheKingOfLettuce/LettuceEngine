@@ -132,3 +132,15 @@ void RaylibAssetManager::RemoveAllTexture2DData() {
         RemoveTexture2DData(_texture2DData.begin().operator*().first);
     }
 }
+
+void RaylibAssetManager::LoadAllAssetManagerGPUData() {
+    // Texture2D Data
+    AssetTypeCollection<Texture2DAsset>* texture2Ds = AssetManager::GetAssetCollection<Texture2DAsset>();
+    for (Texture2DAsset* texture : texture2Ds->GetAllAssets()) {
+        AddTexture2DAsset(texture);
+    }
+}
+
+void RaylibAssetManager::UnloadAllAssetManagerGPUData() {
+    RemoveAllTexture2DData();
+}

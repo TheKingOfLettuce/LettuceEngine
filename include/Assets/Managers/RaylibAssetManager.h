@@ -3,9 +3,11 @@
 #include "Assets/ImageAsset.h"
 #include "Assets/Texture2DAsset.h"
 #include "Assets/Managers/AssetManager.h"
+#include "Engine.h"
 
 class RaylibAssetManager {
     friend AssetManager;
+    friend LettuceEngine::Engine;
     friend ImageAssetCollection;
     friend Texture2DAssetCollection;
 
@@ -21,6 +23,9 @@ class RaylibAssetManager {
         static bool HasTexture2DData(std::string id);      
 
     private:
+        static void LoadAllAssetManagerGPUData();
+        static void UnloadAllAssetManagerGPUData();
+
         static bool AddImageAsset(ImageAsset* asset);
         static bool AddTexture2DAsset(Texture2DAsset* asset);
 

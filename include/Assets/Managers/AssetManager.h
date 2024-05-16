@@ -2,37 +2,22 @@
 
 #include "Assets/ImageAsset.h"
 #include "Assets/Texture2DAsset.h"
-#include "Engine.h"
 #include "Assets/Managers/AssetTypeCollection.h"
+#include <typeinfo>
+#include <stdexcept>
 #include <unordered_map>
 
 class AssetManager {
-    friend LettuceEngine::Engine;
-
     public:
-        static bool AddImageAsset(ImageAsset* asset);
-        static ImageAsset* GetImageAsset(std::string id);
-        static bool RemoveImageAsset(ImageAsset* asset);
-        static ImageAsset* RemoveImageAsset(std::string id);
-        static bool HasImageAsset(ImageAsset* asset);
-        static bool HasImageAsset(std::string id);
-
-        static bool AddTexture2DAsset(Texture2DAsset* asset);
-        static Texture2DAsset* GetTexture2DAsset(std::string id);
-        static bool RemoveTexture2DAsset(Texture2DAsset* asset);
-        static Texture2DAsset* RemoveTexture2DAsset(std::string id);
-        static bool HasTexture2DAsset(Texture2DAsset* asset);
-        static bool HasTexture2DAsset(std::string id);
-
         template <typename T>
         static bool AddAsset(T* asset) {
             size_t typeID = typeid(T).hash_code();
             if (!HasAssetType(typeID)) {
-                AddAssetCollection(AssetTypeCollection<T>());
+                AddAssetCollection(new AssetTypeCollection<T>());
             }
 
-            AssetTypeCollection<T> collection = static_cast<AssetTypeCollection<T>>(_assets.at(typeID));
-            return collection.AddAsset(asset);
+            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
+            return collection->AddAsset(asset);
         }
         template <typename T>
         static T* GetAsset(std::string id) {
@@ -41,8 +26,8 @@ class AssetManager {
                 return nullptr;
             }
 
-            AssetTypeCollection<T> collection = static_cast<AssetTypeCollection<T>>(_assets.at(typeID));
-            return collection.GetAsset(id);
+            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
+            return collection->GetAsset(id);
         }
         template <typename T>
         static bool RemoveAsset(T* asset) {
@@ -55,8 +40,8 @@ class AssetManager {
                 return nullptr;
             }
 
-            AssetTypeCollection<T> collection = static_cast<AssetTypeCollection<T>>(_assets.at(typeID));
-            return collection.RemoveAsset(id);
+            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
+            return collection->RemoveAsset(id);
         }
         template <typename T>
         static bool HasAsset(T* asset) {
@@ -69,38 +54,40 @@ class AssetManager {
                 return false;
             }
 
-            AssetTypeCollection<T> collection = static_cast<AssetTypeCollection<T>>(_assets.at(typeID));
-            return collection.HasAsset(id);
+            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
+            return collection->HasAsset(id);
         }
 
         template <typename T>
-        static bool AddAssetCollection(AssetTypeCollection<T> collection) {
+        static bool AddAssetCollection(AssetTypeCollection<T>* collection) {
             size_t typeID = typeid(T).hash_code();
             if (HasAssetType(typeID)) return false;
             _assets.emplace(typeID, collection);
             return true;
         }
 
+        template <typename T>
+        static AssetTypeCollection<T>* GetAssetCollection() {
+            size_t typeID = typeid(T).hash_code();
+            if (!HasAssetType(typeID)) {
+                throw std::invalid_argument("Provided type has never had assets in the manager");
+            }
+
+            return static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
+        }
+
         static void UnloadAllAssets();
-        static void UnloadAllTexture2DAssets();
-        static void UnloadAllImageAssets();
 
     private:
-        static void LoadRaylibData();
-        static void LoadTexture2DRaylibData();
-
-        static void UnloadRaylibData();
-        static void UnloadTexture2DRaylibData();
-
         template <typename T>
         static bool HasAssetTyoe() {
             return HasAssetType(typeid(T).hash_code());
         }
         static bool HasAssetType(size_t typeID);
-        static std::unordered_map<size_t, AssetCollection> _assets;
+        static std::unordered_map<size_t, AssetCollection*> _assets;
 };
 
-class ImageAssetCollection : AssetTypeCollection<ImageAsset> {
+class ImageAssetCollection : public AssetTypeCollection<ImageAsset> {
     public:
         ImageAssetCollection();
 
@@ -108,7 +95,7 @@ class ImageAssetCollection : AssetTypeCollection<ImageAsset> {
         ImageAsset* RemoveAsset(std::string id) override;
 };
 
-class Texture2DAssetCollection : AssetTypeCollection<Texture2DAsset> {
+class Texture2DAssetCollection : public AssetTypeCollection<Texture2DAsset> {
     public:
         Texture2DAssetCollection();
 
