@@ -34,15 +34,15 @@ Asset* AssetCollection::RemoveAsset(std::string id) {
     return toReturn;
 }
 
-bool AssetCollection::HasAsset(Asset* asset) {
+bool AssetCollection::HasAsset(Asset* asset) const {
     return HasAsset(asset->GetAssetID());
 }
 
-bool AssetCollection::HasAsset(std::string id) {
+bool AssetCollection::HasAsset(std::string id) const {
     return _assets.find(id) != _assets.end();
 }
 
-Asset* AssetCollection::GetAsset(std::string id) {
+Asset* AssetCollection::GetAsset(std::string id) const {
     if (!HasAsset(id)) {
         return nullptr;
     }
@@ -50,7 +50,7 @@ Asset* AssetCollection::GetAsset(std::string id) {
     return _assets.at(id);
 }
 
-std::vector<Asset*> AssetCollection::GetAllAssets() {
+const std::vector<Asset*> AssetCollection::GetAllAssets() const {
     std::vector<Asset*> toReturn = std::vector<Asset*>();
     for (const auto& pair : _assets) {
         toReturn.push_back(pair.second);

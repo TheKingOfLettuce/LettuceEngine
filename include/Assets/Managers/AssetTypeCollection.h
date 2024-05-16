@@ -13,11 +13,11 @@ class AssetTypeCollection : public AssetCollection {
             return AssetCollection::AddAsset(asset);
         }
 
-        virtual bool HasAsset(T* asset) {
+        virtual bool HasAsset(T* asset) const {
             return AssetCollection::HasAsset(asset);
         }
 
-        virtual bool HasAsset(std::string id) {
+        virtual bool HasAsset(std::string id) const {
             return AssetCollection::HasAsset(id);
         }
 
@@ -29,11 +29,11 @@ class AssetTypeCollection : public AssetCollection {
             return static_cast<T*>(AssetCollection::RemoveAsset(id));
         }
 
-        virtual T* GetAsset(std::string id) {
+        virtual T* GetAsset(std::string id) const {
             return static_cast<T*>(AssetCollection::GetAsset(id));
         }
 
-        std::vector<T*> GetAllAssets() {
+        const std::vector<T*> GetAllAssets() const {
             std::vector<T*> toReturn = std::vector<T*>();
             for (const auto& pair : _assets) {
                 toReturn.push_back(static_cast<T*>(pair.second));

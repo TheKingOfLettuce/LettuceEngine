@@ -67,7 +67,7 @@ class AssetManager {
         }
 
         template <typename T>
-        static AssetTypeCollection<T>* GetAssetCollection() {
+        static const AssetTypeCollection<T>* GetAssetCollection() {
             size_t typeID = typeid(T).hash_code();
             if (!HasAssetType(typeID)) {
                 throw std::invalid_argument("Provided type has never had assets in the manager");

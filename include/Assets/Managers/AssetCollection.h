@@ -11,10 +11,10 @@ class AssetCollection {
         bool AddAsset(Asset* asset);
         bool RemoveAsset(Asset* asset);
         Asset* RemoveAsset(std::string id);
-        bool HasAsset(Asset* asset);
-        bool HasAsset(std::string id);
-        Asset* GetAsset(std::string id);
-        std::vector<Asset*> GetAllAssets();
+        bool HasAsset(Asset* asset) const;
+        bool HasAsset(std::string id) const;
+        Asset* GetAsset(std::string id) const;
+        const std::vector<Asset*> GetAllAssets() const;
 
     protected:
         std::unordered_map<std::string, Asset*> _assets;
