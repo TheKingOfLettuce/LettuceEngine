@@ -1,4 +1,5 @@
 #include "Assets/Managers/AssetCollection.h"
+#include <stdexcept>
 
 AssetCollection::AssetCollection() {
     _assets = std::unordered_map<std::string, Asset*>();
@@ -11,6 +12,9 @@ AssetCollection::~AssetCollection() {
 }
 
 bool AssetCollection::AddAsset(Asset* asset) {
+    if (asset == nullptr) {
+        throw std::invalid_argument("Provided asset is null");
+    }
     std::string id = asset->GetAssetID();
     if (HasAsset(id)) {
         return false;
