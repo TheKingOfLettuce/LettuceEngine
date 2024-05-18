@@ -25,7 +25,14 @@ bool AssetCollection::AddAsset(Asset* asset) {
 }
 
 bool AssetCollection::RemoveAsset(Asset* asset) {
-    return RemoveAsset(asset->GetAssetID()) != nullptr;
+    if (asset == nullptr) {
+        throw std::invalid_argument("Provided asset is null");
+    }
+    std::string id = asset->GetAssetID();
+    if (!HasAsset(id) || GetAsset(id) != asset) {
+        return false;
+    }
+    return RemoveAsset(id);
 }
 
 Asset* AssetCollection::RemoveAsset(std::string id) {
@@ -39,6 +46,9 @@ Asset* AssetCollection::RemoveAsset(std::string id) {
 }
 
 bool AssetCollection::HasAsset(Asset* asset) const {
+    if (asset == nullptr) {
+        throw std::invalid_argument("Provided asset is null");
+    }
     return HasAsset(asset->GetAssetID());
 }
 

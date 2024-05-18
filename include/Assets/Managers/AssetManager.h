@@ -10,9 +10,13 @@
 class AssetManager {
     public:
         template <typename T>
-        static bool AddAsset(T* asset) {
+        static bool AddAsset(T* asset, bool addDefaultCollection = true) {
+            if (asset == nullptr) {
+                throw std::invalid_argument("Provided asset is null");
+            }
             size_t typeID = typeid(T).hash_code();
             if (!HasAssetType(typeID)) {
+                if (!addDefaultCollection) return false;
                 AddAssetCollection(new AssetTypeCollection<T>());
             }
 
@@ -31,6 +35,9 @@ class AssetManager {
         }
         template <typename T>
         static bool RemoveAsset(T* asset) {
+            if (asset == nullptr) {
+                throw std::invalid_argument("Provided asset is null");
+            }
             return RemoveAsset<T>(asset->GetAssetID()) == nullptr;
         }
         template <typename T>
@@ -45,6 +52,9 @@ class AssetManager {
         }
         template <typename T>
         static bool HasAsset(T* asset) {
+            if (asset == nullptr) {
+                throw std::invalid_argument("Provided asset is null");
+            }
             return HasAsset<T>(asset.GetAssetID());
         }
         template <typename T>
@@ -60,6 +70,9 @@ class AssetManager {
 
         template <typename T>
         static bool AddAssetCollection(AssetTypeCollection<T>* collection) {
+            if (collection == nullptr) {
+                throw std::invalid_argument("Provided collection is null");
+            }
             size_t typeID = typeid(T).hash_code();
             if (HasAssetType(typeID)) return false;
             _assets.emplace(typeID, collection);
