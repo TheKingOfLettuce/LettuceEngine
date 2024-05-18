@@ -42,7 +42,13 @@ std::unordered_map<size_t, AssetCollection*> AssetManager::_assets = std::unorde
 };
 
 void AssetManager::UnloadAllAssets() {
+    for(auto& pair : _assets) {
+        delete pair.second;
+    }
     _assets.clear();
+    // add engine level asset collections here
+    _assets.emplace(typeid(ImageAsset).hash_code(), new ImageAssetCollection());
+    _assets.emplace(typeid(Texture2DAsset).hash_code(), new Texture2DAssetCollection());
 }
 
 bool AssetManager::HasAssetType(size_t typeID) {

@@ -268,3 +268,27 @@ TEST_CASE("AssetManager.GetAssetCollection Tests", AssetManagerTAG) {
         REQUIRE(AssetManager::GetAssetCollection<Asset>() == nullptr);
     }
 }
+
+TEST_CASE("AssetManager.UnloadAllAssets Tests", AssetManagerTAG) {
+    AssetManager::UnloadAllAssets();
+
+    SECTION("Should unload Assets") {
+        AssetManager::AddAsset(new Asset("Asset"));
+        REQUIRE(AssetManager::GetAsset<Asset>("Asset"));
+        REQUIRE(AssetManager::GetAssetCollection<Asset>() != nullptr);
+        AssetManager::UnloadAllAssets();
+        REQUIRE_FALSE(AssetManager::GetAsset<Asset>("Asset"));
+        REQUIRE(AssetManager::GetAssetCollection<Asset>() == nullptr);
+    }
+
+    SECTION("Should Keep Engine Asset Collections") {
+        AssetManager::AddAsset(new Asset("Asset"));
+        REQUIRE(AssetManager::GetAssetCollection<Asset>() != nullptr);
+        REQUIRE(AssetManager::GetAssetCollection<ImageAsset>() != nullptr);
+        REQUIRE(AssetManager::GetAssetCollection<Texture2DAsset>() != nullptr);
+        AssetManager::UnloadAllAssets();
+        REQUIRE(AssetManager::GetAssetCollection<Asset>() == nullptr);
+        REQUIRE(AssetManager::GetAssetCollection<ImageAsset>() != nullptr);
+        REQUIRE(AssetManager::GetAssetCollection<Texture2DAsset>() != nullptr);
+    }
+}
