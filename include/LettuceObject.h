@@ -11,7 +11,6 @@
 #include "Utils/Callbacks/CallbackWithArg.h"
 
 class Component; // forward declare
-class ComponentData;
 
 class ComponentPair {
         public:

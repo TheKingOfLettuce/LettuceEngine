@@ -15,7 +15,9 @@ class ImageRenderer : public Component {
 
         void SetColor(LettuceEngine::Math::Color color);
         LettuceEngine::Math::Color GetColor();
-
+    protected:
+        void SaveToJson(nlohmann::json& j) override;
+        void LoadFromJson(const nlohmann::json& data) override;
     private:
         Texture2DAsset* _texture;
         LettuceEngine::Math::Color _color;
