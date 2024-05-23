@@ -6,7 +6,7 @@
 #include "Drawing/BasicDrawing.h"
 #include "Math/Color.h"
 #include "Components/ComponentFactory.h"
-REGISTER(Collider2D)
+REGISTER_COMPONENT(Collider2D)
 
 using json = nlohmann::json;
 using LettuceEngine::Math::Vector2;

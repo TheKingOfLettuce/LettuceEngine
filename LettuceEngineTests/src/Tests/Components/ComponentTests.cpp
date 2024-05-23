@@ -83,7 +83,7 @@ TEST_CASE("Component.Init Tests", "[Component]") {
 	}
 }
 
-TEST_CASE("Component.SaveToData Tests", "[Component]") {
+TEST_CASE("Component.SaveToJson Tests", "[Component]") {
 	Component c = Component();
 
 	SECTION("Should Save With Enabled False") {
@@ -91,7 +91,9 @@ TEST_CASE("Component.SaveToData Tests", "[Component]") {
 			{"enabled", false}
 		};
 
-		REQUIRE(c.SaveToData() == j.dump());
+		json saveJ;
+		c.SaveToJson(saveJ);
+		REQUIRE(saveJ == j);
 	}
 
 	SECTION("Should Save With Enabled True If Component Enabled") {
@@ -100,11 +102,13 @@ TEST_CASE("Component.SaveToData Tests", "[Component]") {
 			{"enabled", true}
 		};
 
-		REQUIRE(c.SaveToData() == j.dump());
+		json saveJ;
+		c.SaveToJson(saveJ);
+		REQUIRE(saveJ == j);
 	}
 }
 
-TEST_CASE("Component.LoadFromData Tests", "[Component]") {
+TEST_CASE("Component.LoadFromJson Tests", "[Component]") {
 	Component c = Component();
 
 	SECTION("Should Load With Enabled False") {
@@ -114,7 +118,7 @@ TEST_CASE("Component.LoadFromData Tests", "[Component]") {
 
 		c.SetEnabled(true);
 		REQUIRE(c.GetEnabled());
-		c.LoadFromData(j.dump());
+		c.LoadFromJson(j);
 		REQUIRE_FALSE(c.GetEnabled());
 	}
 
@@ -122,7 +126,7 @@ TEST_CASE("Component.LoadFromData Tests", "[Component]") {
 		json j = json {
 			{"enabled", true}
 		};
-		c.LoadFromData(j.dump());
+		c.LoadFromJson(j);
 
 		REQUIRE(c.GetEnabled());
 	}

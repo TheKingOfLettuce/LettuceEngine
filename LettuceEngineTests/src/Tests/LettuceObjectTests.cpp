@@ -8,7 +8,7 @@ using LettuceEngine::Math::Vector2;
 class SaveComponent : public Component {
 
 };
-REGISTER(SaveComponent);
+REGISTER_COMPONENT(SaveComponent);
 
 TEST_CASE("LettuceObject.Position Tests", "[LettuceObject]") {
     LettuceObject obj = LettuceObject();
@@ -488,7 +488,9 @@ TEST_CASE("LettuceObject.SaveToData Tests", "[LettuceObject]") {
 		obj.AddComponent(s);
 		LettuceObjectData data = obj.SaveToData();
 		REQUIRE(data.ComponentData.size() == 1);
-		REQUIRE(data.ComponentData[0].ComponentData == s->SaveToData());
+		nlohmann::json saveJ;
+		s->SaveToJson(saveJ);
+		REQUIRE(data.ComponentData[0].ComponentData == saveJ.dump());
 		REQUIRE(data.ComponentData[0].TypeName == ComponentFactory::GetSaveName<SaveComponent>());
 	}
 

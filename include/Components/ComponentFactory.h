@@ -17,6 +17,8 @@ class ComponentFactory {
     public:
         template <class T>
         static void RegisterClass(const std::string &name) {
+            static_assert(std::is_base_of<Component, T>{},
+            "Provided type must be a Component");
             Creators.insert({name, []() -> Component*
                             { return new T(); }});
             SaveNames.insert({typeid(T).hash_code(), name});
@@ -32,6 +34,8 @@ class ComponentFactory {
 
         template <class T>
         static const std::string GetSaveName() {
+            static_assert(std::is_base_of<Component, T>{},
+            "Provided type must be a Component");
             return GetSaveName(typeid(T).hash_code());
         }
 
@@ -44,12 +48,14 @@ class ComponentFactory {
 };
 
 template <class T>
-class Creator {
+class ComponentCreator {
+static_assert(std::is_base_of<Component, T>{},
+"Provided type must be a Component");
 public:
-    explicit Creator(const std::string &name) {
+    explicit ComponentCreator(const std::string &name) {
         Log::Info("Registering component to factory: " + name);
         ComponentFactory::RegisterClass<T>(name);
     }
 };
 
-#define REGISTER(derived_class) Creator<derived_class> derived_class##Creator(#derived_class);
+#define REGISTER_COMPONENT(derived_class) ComponentCreator<derived_class> derived_class##ComponentCreator(#derived_class);

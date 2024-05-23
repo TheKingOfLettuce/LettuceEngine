@@ -2,7 +2,7 @@
 #include "Components/ComponentFactory.h"
 #include "Drawing/BasicDrawing.h"
 #include "Assets/Managers/AssetManager.h"
-REGISTER(ImageRenderer)
+REGISTER_COMPONENT(ImageRenderer)
 
 using json = nlohmann::json;
 using LettuceEngine::Math::Color;

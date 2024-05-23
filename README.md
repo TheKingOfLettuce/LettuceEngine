@@ -38,7 +38,8 @@ I primarily used VSCode during development and have made a simple and primitive 
 
 The following have unit tests written for them:
 - AABB
-- AssetManager
+- Assets
+    - AssetManager
     - AssetCollection
 - CallbackHandler
 - CollisionSystem2D

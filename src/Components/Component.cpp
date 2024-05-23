@@ -40,19 +40,8 @@ LettuceObject* Component::Lettuce() const {
     return _lettuce;
 }
 
-std::string Component::SaveToData() {
-    json j;
-    SaveToJson(j);
-    return j.dump();
-}
-
 void Component::SaveToJson(json& j) {
     j["enabled"] = _enabled;
-}
-
-void Component::LoadFromData(std::string jsonData) {
-    const json data = json::parse(jsonData);
-    LoadFromJson(data);
 }
 
 void Component::LoadFromJson(const json& data) {
