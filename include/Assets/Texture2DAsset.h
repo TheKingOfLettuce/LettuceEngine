@@ -3,6 +3,7 @@
 
 class Texture2DAsset : public Asset {
     public:
+        Texture2DAsset(std::string id);
         Texture2DAsset(ImageAsset* image, std::string id);
         ~Texture2DAsset();
 
