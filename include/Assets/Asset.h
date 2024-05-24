@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Utils/json.hpp"
 
 class Asset {
     public:
@@ -7,6 +8,9 @@ class Asset {
         virtual ~Asset();
 
         std::string GetAssetID();
+
+        void virtual SaveToJson(nlohmann::json& j) const;
+        void virtual LoadFromJson(const nlohmann::json& data);
     protected:
         std::string _assetID;
 };

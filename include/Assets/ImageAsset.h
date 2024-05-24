@@ -8,6 +8,9 @@ class ImageAsset : public Asset {
         ~ImageAsset();
 
         std::string GetFilePath();
+
+        void SaveToJson(nlohmann::json& j) const override;
+        void LoadFromJson(const nlohmann::json& data) override;
     private:
         std::string _filePath;
 };
