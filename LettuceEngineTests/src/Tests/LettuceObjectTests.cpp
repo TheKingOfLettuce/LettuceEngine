@@ -491,7 +491,7 @@ TEST_CASE("LettuceObject.SaveToData Tests", "[LettuceObject]") {
 		nlohmann::json saveJ;
 		s->SaveToJson(saveJ);
 		REQUIRE(data.ComponentData[0].ComponentData == saveJ.dump());
-		REQUIRE(data.ComponentData[0].TypeName == ComponentFactory::GetSaveName<SaveComponent>());
+		REQUIRE(data.ComponentData[0].TypeName == Factory<Component>::GetSaveName<SaveComponent>());
 	}
 
 	SECTION("Should Save Child Info") {

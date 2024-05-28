@@ -197,7 +197,7 @@ LettuceObjectData LettuceObject::SaveToData() {
         for (int i = 0; i < componentList->Size(); i++) {
             ComponentPair pair = ComponentPair();
             Component* c = componentList->Get(i);
-            const std::string typeName = ComponentFactory::GetSaveName(typeid(*c).hash_code());
+            const std::string typeName = Factory<Component>::GetSaveName(typeid(*c).hash_code());
             if (typeName.empty())  {
                 Log::Info("Received an empty component type when saving LettuceObject");
                 continue;
@@ -231,7 +231,7 @@ void LettuceObject::LoadFromData(LettuceObjectData data) {
     SetPosition(data.Position);
 
     for (auto const& pair : data.ComponentData) {
-        Component* c = ComponentFactory::Create(pair.TypeName);
+        Component* c = Factory<Component>::Create(pair.TypeName);
         if (c == nullptr) {
             Log::Warning("Attempted to load component [" + pair.TypeName + "] but was not created");
             continue;
