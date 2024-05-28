@@ -111,6 +111,9 @@ class AssetManager {
 
         static void UnloadAllAssets();
 
+        static void SaveToJson(nlohmann::json& j);
+        static void LoadFromJson(const nlohmann::json& data);
+
     private:
         template <typename T>
         static bool HasAssetTyoe() {

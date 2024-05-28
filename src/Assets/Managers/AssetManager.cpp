@@ -2,6 +2,9 @@
 #include "Assets/Managers/RaylibAssetManager.h"
 #include "Assets/Managers/AssetTypeCollection.h"
 #include "Engine.h"
+#include "Assets/Managers/AssetCollectionFactory.h"
+REGISTER_ASSET_COLLECTION(ImageAssetCollection);
+REGISTER_ASSET_COLLECTION(Texture2DAssetCollection);
 
 ImageAssetCollection::ImageAssetCollection() : AssetTypeCollection<ImageAsset>() {}
 
