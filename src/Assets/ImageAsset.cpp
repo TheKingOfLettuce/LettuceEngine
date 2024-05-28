@@ -4,6 +4,7 @@ REGISTER_ASSET(ImageAsset);
 
 using json = nlohmann::json;
 
+ImageAsset::ImageAsset() : Asset() {}
 ImageAsset::ImageAsset(std::string id) : Asset(id) {}
 
 ImageAsset::ImageAsset(std::string filePath, std::string id) : ImageAsset(id) {

@@ -16,6 +16,8 @@ class AssetCollection {
         Asset* GetAsset(std::string id) const;
         const std::vector<Asset*> GetAllAssets() const;
 
+        void SaveToJson(nlohmann::json& j) const;
+        void LoadFromJson(const nlohmann::json& data);
     protected:
         std::unordered_map<std::string, Asset*> _assets;
 };

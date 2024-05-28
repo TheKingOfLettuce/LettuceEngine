@@ -1,5 +1,6 @@
 #include "Assets/Managers/AssetCollection.h"
 #include <stdexcept>
+#include "Assets/Managers/AssetFactory.h"
 
 AssetCollection::AssetCollection() {
     _assets = std::unordered_map<std::string, Asset*>();
@@ -71,4 +72,35 @@ const std::vector<Asset*> AssetCollection::GetAllAssets() const {
     }
 
     return toReturn;
+}
+
+using json = nlohmann::json;
+
+void AssetCollection::SaveToJson(json& j) const {
+    std::vector<std::pair<std::string, json>> assetPairs = std::vector<std::pair<std::string, json>>();
+    for (const auto& pair : _assets) {
+        const std::string assetName = AssetFactory::GetSaveName(typeid(pair.second).hash_code());
+        if (assetName.empty()) {
+            Log::Info("Asset is not in the AssetFactory and cannot be persisted " + pair.first);
+            continue;
+        }
+        json assetData = json();
+        pair.second->SaveToJson(assetData);
+        assetPairs.push_back(std::pair<std::string, json>(assetName, assetData));
+    }
+
+    j["assetPairs"] = assetPairs;
+}
+
+void AssetCollection::LoadFromJson(const json& data) {
+    std::vector<std::pair<std::string, json>> assetPairs = data.at("assetPairs");
+    for (const auto& pair : assetPairs) {
+        Asset* persistedAsset = AssetFactory::Create(pair.first);
+        if (persistedAsset == nullptr)
+            continue;
+        persistedAsset->LoadFromJson(pair.second);
+        if (!AddAsset(persistedAsset)) {
+            Log::Warning("Failed to restore asset: " + persistedAsset->GetAssetID());
+        }
+    }
 }

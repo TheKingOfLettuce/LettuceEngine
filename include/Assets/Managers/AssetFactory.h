@@ -9,7 +9,7 @@
 
 class AssetFactory {
     private:
-        inline static std::map<std::string, std::function<Asset* (std::string)>> Creators;
+        inline static std::map<std::string, std::function<Asset* ()>> Creators;
         inline static std::map<size_t, std::string> SaveNames;
 
     public:
@@ -17,17 +17,17 @@ class AssetFactory {
         static void RegisterClass(const std::string &name) {
             static_assert(std::is_base_of<Asset, T>{},
             "Provided type must be a Asset");
-            Creators.insert({name, [](std::string id) -> Asset*
-                            { return new T(id); }});
+            Creators.insert({name, []() -> Asset*
+                            { return new T(); }});
             SaveNames.insert({typeid(T).hash_code(), name});
         }
 
-        static Asset* Create(const std::string &name, const std::string &id) {
+        static Asset* Create(const std::string &name) {
             const auto it = Creators.find(name);
             if (it == Creators.end())
                 return nullptr; // name is not a registered Asset
 
-            return (it->second)(id);
+            return (it->second)();
         }
 
         template <class T>
@@ -56,4 +56,4 @@ public:
     }
 };
 
-#define REGISTER_ASSET(derived_class) AssetCreator<derived_class> derived_class##AssetCreator(#derived_class);
+#define REGISTER_ASSET(derived_class) AssetCreator<derived_class> derived_class##ACreator(#derived_class);

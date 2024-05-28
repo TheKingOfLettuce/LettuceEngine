@@ -2,6 +2,8 @@
 
 using json = nlohmann::json;
 
+Asset::Asset() {}
+
 Asset::Asset(std::string id) {
     _assetID = id;
 }

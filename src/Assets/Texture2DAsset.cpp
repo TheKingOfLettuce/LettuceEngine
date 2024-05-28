@@ -4,6 +4,7 @@ REGISTER_ASSET(Texture2DAsset);
 
 using json = nlohmann::json;
 
+Texture2DAsset::Texture2DAsset() : Asset() {}
 Texture2DAsset::Texture2DAsset(std::string id) : Asset(id) {}
 
 Texture2DAsset::Texture2DAsset(ImageAsset* image, std::string id) : Texture2DAsset(id) {

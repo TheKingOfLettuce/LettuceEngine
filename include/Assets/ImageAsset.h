@@ -3,6 +3,7 @@
 
 class ImageAsset : public Asset {
     public:
+        ImageAsset();
         ImageAsset(std::string id);
         ImageAsset(std::string filePath, std::string id);
         ~ImageAsset();
