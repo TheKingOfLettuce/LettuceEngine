@@ -8,12 +8,12 @@ class AssetCollection {
         AssetCollection();
         virtual ~AssetCollection();
 
-        bool AddAsset(Asset* asset);
-        bool RemoveAsset(Asset* asset);
-        Asset* RemoveAsset(std::string id);
-        bool HasAsset(Asset* asset) const;
-        bool HasAsset(std::string id) const;
-        Asset* GetAsset(std::string id) const;
+        virtual bool AddAsset(Asset* asset);
+        virtual bool RemoveAsset(Asset* asset);
+        virtual Asset* RemoveAsset(std::string id);
+        virtual bool HasAsset(Asset* asset) const;
+        virtual bool HasAsset(std::string id) const;
+        virtual Asset* GetAsset(std::string id) const;
         const std::vector<Asset*> GetAllAssets() const;
 
         void SaveToJson(nlohmann::json& j) const;

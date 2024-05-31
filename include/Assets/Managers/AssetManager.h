@@ -9,22 +9,7 @@
 
 class AssetManager {
     public:
-        template <typename T>
-        static bool AddAsset(T* asset, bool addDefaultCollection = true) {
-            static_assert(std::is_base_of<Asset, T>{},
-            "AssetTypeCollection Type must be of type Asset");
-            if (asset == nullptr) {
-                throw std::invalid_argument("Provided asset is null");
-            }
-            size_t typeID = typeid(T).hash_code();
-            if (!HasAssetType(typeID)) {
-                if (!addDefaultCollection) return false;
-                AddAssetCollection(new AssetTypeCollection<T>());
-            }
-
-            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
-            return collection->AddAsset(asset);
-        }
+        static bool AddAsset(Asset* asset, bool addDefaultCollection = true);
         template <typename T>
         static T* GetAsset(std::string id) {
             static_assert(std::is_base_of<Asset, T>{},
@@ -34,8 +19,7 @@ class AssetManager {
                 return nullptr;
             }
 
-            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
-            return collection->GetAsset(id);
+            return static_cast<T*>(_assets.at(typeID)->GetAsset(id));
         }
         template <typename T>
         static bool RemoveAsset(T* asset) {
@@ -59,8 +43,7 @@ class AssetManager {
                 return nullptr;
             }
 
-            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
-            return collection->RemoveAsset(id);
+            return static_cast<T*>(_assets.at(typeID)->RemoveAsset(id));
         }
         template <typename T>
         static bool HasAsset(T* asset) {
@@ -80,25 +63,21 @@ class AssetManager {
                 return false;
             }
 
-            AssetTypeCollection<T>* collection = static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
-            return collection->HasAsset(id);
+            return static_cast<T*>(_assets.at(typeID)->HasAsset(id));
         }
 
         template <typename T>
-        static bool AddAssetCollection(AssetTypeCollection<T>* collection) {
+        static bool AddAssetCollection(AssetCollection* collection) {
             static_assert(std::is_base_of<Asset, T>{},
             "AssetTypeCollection Type must be of type Asset");
-            if (collection == nullptr) {
-                throw std::invalid_argument("Provided collection is null");
-            }
             size_t typeID = typeid(T).hash_code();
-            if (HasAssetType(typeID)) return false;
-            _assets.emplace(typeID, collection);
-            return true;
+            return AddAssetCollection(collection, typeID);
         }
 
+        static bool AddAssetCollection(AssetCollection* collection, size_t assetType);
+
         template <typename T>
-        static const AssetTypeCollection<T>* GetAssetCollection() {
+        static const AssetCollection* GetAssetCollection() {
             static_assert(std::is_base_of<Asset, T>{},
             "AssetTypeCollection Type must be of type Asset");
             size_t typeID = typeid(T).hash_code();
@@ -106,7 +85,7 @@ class AssetManager {
                 return nullptr;
             }
 
-            return static_cast<AssetTypeCollection<T>*>(_assets.at(typeID));
+            return _assets.at(typeID);
         }
 
         static void UnloadAllAssets();
@@ -130,7 +109,7 @@ class ImageAssetCollection : public AssetTypeCollection<ImageAsset> {
         ImageAssetCollection();
 
         bool AddAsset(ImageAsset* asset) override;
-        ImageAsset* RemoveAsset(std::string id) override;
+        Asset* RemoveAsset(std::string id) override;
 };
 
 class Texture2DAssetCollection : public AssetTypeCollection<Texture2DAsset> {
@@ -138,5 +117,5 @@ class Texture2DAssetCollection : public AssetTypeCollection<Texture2DAsset> {
         Texture2DAssetCollection();
 
         bool AddAsset(Texture2DAsset* asset) override;
-        Texture2DAsset* RemoveAsset(std::string id) override;
+        Asset* RemoveAsset(std::string id) override;
 };

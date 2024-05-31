@@ -15,8 +15,8 @@ bool ImageAssetCollection::AddAsset(ImageAsset* asset) {
     return added;
 }
 
-ImageAsset* ImageAssetCollection::RemoveAsset(std::string id) {
-    ImageAsset* removed = AssetTypeCollection::RemoveAsset(id);
+Asset* ImageAssetCollection::RemoveAsset(std::string id) {
+    Asset* removed = AssetTypeCollection::RemoveAsset(id);
     if (removed)
         RaylibAssetManager::RemoveImageData(id);
     return removed;
@@ -31,8 +31,8 @@ bool Texture2DAssetCollection::AddAsset(Texture2DAsset* asset) {
     return added;
 }
 
-Texture2DAsset* Texture2DAssetCollection::RemoveAsset(std::string id) {
-    Texture2DAsset* removed = AssetTypeCollection::RemoveAsset(id);
+Asset* Texture2DAssetCollection::RemoveAsset(std::string id) {
+    Asset* removed = AssetTypeCollection::RemoveAsset(id);
     if (removed)
         RaylibAssetManager::RemoveTexture2DData(id);
     return removed;
@@ -56,4 +56,26 @@ void AssetManager::UnloadAllAssets() {
 
 bool AssetManager::HasAssetType(size_t typeID) {
     return _assets.find(typeID) != _assets.end();
+}
+
+bool AssetManager::AddAsset(Asset* asset, bool addDefaultCollection) {
+    if (asset == nullptr) {
+        throw std::invalid_argument("Provided asset is null");
+    }
+    size_t typeID = typeid(asset).hash_code();
+    if (!HasAssetType(typeID)) {
+        if (!addDefaultCollection) return false;
+        AddAssetCollection(new AssetCollection(), typeID);
+    }
+
+    return _assets.at(typeID)->AddAsset(asset);
+}
+
+bool AssetManager::AddAssetCollection(AssetCollection* collection, size_t assetType) {
+    if (collection == nullptr) {
+        throw std::invalid_argument("Provided collection is null");
+    }
+    if (HasAssetType(assetType)) return false;
+    _assets.emplace(assetType, collection);
+    return true;
 }

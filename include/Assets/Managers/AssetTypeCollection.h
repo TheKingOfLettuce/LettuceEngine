@@ -9,29 +9,11 @@ class AssetTypeCollection : public AssetCollection {
         AssetTypeCollection() : AssetCollection() {}
         ~AssetTypeCollection() {}
 
-        virtual bool AddAsset(T* asset) {
-            return AssetCollection::AddAsset(asset);
+        bool AddAsset(Asset* asset) override {
+            return AddAsset(static_cast<T*>(asset));
         }
 
-        virtual bool HasAsset(T* asset) const {
-            return AssetCollection::HasAsset(asset);
-        }
-
-        virtual bool HasAsset(std::string id) const {
-            return AssetCollection::HasAsset(id);
-        }
-
-        virtual bool RemoveAsset(T* asset) {
-            return AssetCollection::RemoveAsset(asset);
-        }
-
-        virtual T* RemoveAsset(std::string id) {
-            return static_cast<T*>(AssetCollection::RemoveAsset(id));
-        }
-
-        virtual T* GetAsset(std::string id) const {
-            return static_cast<T*>(AssetCollection::GetAsset(id));
-        }
+        virtual bool AddAsset(T* asset) = 0;
 
         const std::vector<T*> GetAllAssets() const {
             std::vector<T*> toReturn = std::vector<T*>();

@@ -135,7 +135,7 @@ void RaylibAssetManager::RemoveAllTexture2DData() {
 
 void RaylibAssetManager::LoadAllAssetManagerGPUData() {
     // Texture2D Data
-    const AssetTypeCollection<Texture2DAsset>* texture2Ds = AssetManager::GetAssetCollection<Texture2DAsset>();
+    const Texture2DAssetCollection* texture2Ds = static_cast<const Texture2DAssetCollection*>(AssetManager::GetAssetCollection<Texture2DAsset>());
     for (Texture2DAsset* texture : texture2Ds->GetAllAssets()) {
         AddTexture2DAsset(texture);
     }

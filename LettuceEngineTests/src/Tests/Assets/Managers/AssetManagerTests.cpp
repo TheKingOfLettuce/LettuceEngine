@@ -46,7 +46,7 @@ TEST_CASE("AssetManager.AddAsset Tests", AssetManagerTAG) {
     }
 
     SECTION("Should throw if null provided") {
-        REQUIRE_THROWS_AS(AssetManager::AddAsset<Asset>(nullptr), std::invalid_argument);
+        REQUIRE_THROWS_AS(AssetManager::AddAsset(nullptr), std::invalid_argument);
     }
 }
 
@@ -228,18 +228,18 @@ TEST_CASE("AssetManager.AddAssetCollection Tests", AssetManagerTAG) {
 
     SECTION("Should Add Collection") {
         TestCollection* collection = new TestCollection();
-        REQUIRE(AssetManager::AddAssetCollection(collection));
+        REQUIRE(AssetManager::AddAssetCollection<CustomAsset>(collection));
     }
 
     SECTION("Should Not Add Collection If Already Added") {
         TestCollection* collection = new TestCollection();
         AssetManager::AddAsset(new CustomAsset("Asset"));
-        REQUIRE_FALSE(AssetManager::AddAssetCollection(collection));
+        REQUIRE_FALSE(AssetManager::AddAssetCollection<CustomAsset>(collection));
     }
 
     SECTION("Should Call Custom Collection") {
         TestCollection* collection = new TestCollection();
-        AssetManager::AddAssetCollection(collection);
+        AssetManager::AddAssetCollection<CustomAsset>(collection);
         AssetManager::AddAsset(new CustomAsset("Asset"));
         REQUIRE(collection->Flag);
     }
@@ -254,7 +254,7 @@ TEST_CASE("AssetManager.GetAssetCollection Tests", AssetManagerTAG) {
 
     SECTION("Should Get Collection") {
         TestCollection* collection = new TestCollection();
-        AssetManager::AddAssetCollection(collection);
+        AssetManager::AddAssetCollection<CustomAsset>(collection);
         REQUIRE(AssetManager::GetAssetCollection<CustomAsset>() == collection);
     }
 
