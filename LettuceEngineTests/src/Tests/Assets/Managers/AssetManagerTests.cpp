@@ -215,12 +215,12 @@ class TestCollection : public AssetTypeCollection<CustomAsset> {
         public:
             TestCollection() : AssetTypeCollection() {}
 
+            bool Flag = false;
+        protected:
             bool AddAsset(CustomAsset* asset) override {
                 Flag = true;
                 return AssetTypeCollection::AddAsset(asset);
             }
-
-            bool Flag = false;
 };
 
 TEST_CASE("AssetManager.AddAssetCollection Tests", AssetManagerTAG) {

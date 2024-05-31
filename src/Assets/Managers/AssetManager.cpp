@@ -62,7 +62,7 @@ bool AssetManager::AddAsset(Asset* asset, bool addDefaultCollection) {
     if (asset == nullptr) {
         throw std::invalid_argument("Provided asset is null");
     }
-    size_t typeID = typeid(asset).hash_code();
+    size_t typeID = typeid(*asset).hash_code();
     if (!HasAssetType(typeID)) {
         if (!addDefaultCollection) return false;
         AddAssetCollection(new AssetCollection(), typeID);

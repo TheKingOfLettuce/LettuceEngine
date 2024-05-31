@@ -13,8 +13,6 @@ class AssetTypeCollection : public AssetCollection {
             return AddAsset(static_cast<T*>(asset));
         }
 
-        virtual bool AddAsset(T* asset) = 0;
-
         const std::vector<T*> GetAllAssets() const {
             std::vector<T*> toReturn = std::vector<T*>();
             for (const auto& pair : _assets) {
@@ -22,5 +20,10 @@ class AssetTypeCollection : public AssetCollection {
             }
 
             return toReturn;
+        }
+
+    protected:
+        virtual bool AddAsset(T* asset) {
+            return AssetCollection::AddAsset(asset);
         }
 };

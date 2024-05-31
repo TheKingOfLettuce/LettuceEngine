@@ -63,7 +63,7 @@ class AssetManager {
                 return false;
             }
 
-            return static_cast<T*>(_assets.at(typeID)->HasAsset(id));
+            return _assets.at(typeID)->HasAsset(id);
         }
 
         template <typename T>
@@ -108,14 +108,17 @@ class ImageAssetCollection : public AssetTypeCollection<ImageAsset> {
     public:
         ImageAssetCollection();
 
-        bool AddAsset(ImageAsset* asset) override;
         Asset* RemoveAsset(std::string id) override;
+    protected:
+        bool AddAsset(ImageAsset* asset) override;
 };
 
 class Texture2DAssetCollection : public AssetTypeCollection<Texture2DAsset> {
     public:
         Texture2DAssetCollection();
 
-        bool AddAsset(Texture2DAsset* asset) override;
         Asset* RemoveAsset(std::string id) override;
+    protected:
+        bool AddAsset(Texture2DAsset* asset) override;
+
 };
