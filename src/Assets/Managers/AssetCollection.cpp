@@ -96,8 +96,10 @@ void AssetCollection::LoadFromJson(const json& data) {
     std::vector<std::pair<std::string, json>> assetPairs = data.at("assetPairs");
     for (const auto& pair : assetPairs) {
         Asset* persistedAsset = Factory<Asset>::Create(pair.first);
-        if (persistedAsset == nullptr)
+        if (persistedAsset == nullptr) {
+            Log::Warning("Failed to load saved asset: " + pair.first);
             continue;
+        }
         persistedAsset->LoadFromJson(pair.second);
         if (!AddAsset(persistedAsset)) {
             Log::Warning("Failed to restore asset: " + persistedAsset->GetAssetID());

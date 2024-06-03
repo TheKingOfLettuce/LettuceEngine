@@ -40,6 +40,7 @@ Asset* Texture2DAssetCollection::RemoveAsset(std::string id) {
 
 std::unordered_map<size_t, AssetCollection*> AssetManager::_assets = std::unordered_map<size_t, AssetCollection*>
 {
+    // engine level asset collections
     {typeid(ImageAsset).hash_code(), new ImageAssetCollection()},
     {typeid(Texture2DAsset).hash_code(), new Texture2DAssetCollection()}
 };
@@ -78,4 +79,37 @@ bool AssetManager::AddAssetCollection(AssetCollection* collection, size_t assetT
     if (HasAssetType(assetType)) return false;
     _assets.emplace(assetType, collection);
     return true;
+}
+
+using json = nlohmann::json;
+
+void AssetManager::SaveToJson(json& j) {
+    std::vector<std::pair<std::string, json>> saveData = std::vector<std::pair<std::string, json>>();
+    for(const auto& assetCollectionPair : _assets) {
+        std::string saveName = Factory<AssetCollection>::GetSaveName(assetCollectionPair.first);
+        if (saveName.empty()) {
+            Log::Warning("Cannot persist Unique AssetCollection " + std::string(typeid(*assetCollectionPair.second).name()));
+        }
+
+        json assetData;
+        assetCollectionPair.second->SaveToJson(assetData);
+        std::pair<std::string, json> assetCollectionData = std::pair<std::string, json>(saveName, assetData);
+        saveData.push_back(assetCollectionData);
+    }
+
+    j["assetData"] = saveData;
+}
+
+void AssetManager::LoadFromJson(const json& data) {
+    std::vector<std::pair<std::string, json>> saveData = data.at("assetData");
+    for(const auto& assetCollectionPair : saveData) {
+        AssetCollection* collection = Factory<AssetCollection>::Create(assetCollectionPair.first);
+        if (collection == nullptr) {
+            Log::Error("Failed to create asset collection from save name: " + assetCollectionPair.first);
+            continue;
+        }
+
+        collection->LoadFromJson(assetCollectionPair.second);
+        AddAssetCollection(collection, typeid(*collection).hash_code());
+    }
 }

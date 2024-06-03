@@ -209,3 +209,7 @@ TEST_CASE("AssetCollection.GetAllAssets", AssetCollectionTAG) {
         REQUIRE(Helper::HasAsset(assets, asset3));
     }
 }
+
+TEST_CASE("AssetCollection.SaveToJson", AssetCollectionTAG) {
+    
+}
