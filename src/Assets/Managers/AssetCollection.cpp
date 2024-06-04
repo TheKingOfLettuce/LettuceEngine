@@ -79,7 +79,7 @@ using json = nlohmann::json;
 void AssetCollection::SaveToJson(json& j) const {
     std::vector<std::pair<std::string, json>> assetPairs = std::vector<std::pair<std::string, json>>();
     for (const auto& pair : _assets) {
-        const std::string assetName = Factory<Asset>::GetSaveName(typeid(pair.second).hash_code());
+        const std::string assetName = Factory<Asset>::GetSaveName(typeid(*pair.second).hash_code());
         if (assetName.empty()) {
             Log::Info("Asset is not in the AssetFactory and cannot be persisted " + pair.first);
             continue;

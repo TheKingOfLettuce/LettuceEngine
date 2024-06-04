@@ -1,5 +1,6 @@
 #include "catch_amalgamated.hpp"
 #include "Assets/Managers/AssetCollection.h"
+#include "Assets/Managers/AssetFactory.h"
 
 const char* AssetCollectionTAG = "[AssetCollection]";
 
@@ -210,6 +211,57 @@ TEST_CASE("AssetCollection.GetAllAssets", AssetCollectionTAG) {
     }
 }
 
-TEST_CASE("AssetCollection.SaveToJson", AssetCollectionTAG) {
-    
+TEST_CASE("AssetCollection.LoadFromJson", AssetCollectionTAG) {
+    class TestSaveAsset : public Asset {
+        public:
+            TestSaveAsset() : Asset() {}
+            TestSaveAsset(std::string id) : Asset(id) {}
+            int Data = 0;
+
+            void SaveToJson(nlohmann::json& j) const override {
+                Asset::SaveToJson(j);
+                j["data"] = Data;
+            }
+
+            void LoadFromJson(const nlohmann::json& data) override {
+                Asset::LoadFromJson(data);
+                Data = data.at("data");
+            }
+
+    };
+    REGISTER_ASSET(TestSaveAsset);
+
+    SECTION("Should Save Then Load Assets") {
+        AssetCollection collection = AssetCollection();
+        TestSaveAsset* asset0 = new TestSaveAsset("Asset0");
+        TestSaveAsset* asset1 = new TestSaveAsset("Asset1");
+        asset1->Data = 1;
+        TestSaveAsset* asset2 = new TestSaveAsset("Asset2");
+        asset2->Data = 2;
+        TestSaveAsset* asset3 = new TestSaveAsset("Asset3");
+        asset3->Data = 3;
+        collection.AddAsset(asset0);
+        collection.AddAsset(asset1);
+        collection.AddAsset(asset2);
+        collection.AddAsset(asset3);
+        collection.AddAsset(new Asset("WillNotSave"));
+
+        nlohmann::json collectionJson;
+        collection.SaveToJson(collectionJson);
+        REQUIRE(collection.GetAllAssets().size() == 5);
+        collection = AssetCollection();
+        REQUIRE(collection.GetAllAssets().size() == 0);
+        collection.LoadFromJson(collectionJson);
+
+        REQUIRE(collection.HasAsset("Asset0"));
+        REQUIRE(collection.HasAsset("Asset1"));
+        REQUIRE(collection.HasAsset("Asset2"));
+        REQUIRE(collection.HasAsset("Asset3"));
+        REQUIRE_FALSE(collection.HasAsset("WillNotSave"));
+
+        REQUIRE(static_cast<TestSaveAsset*>(collection.GetAsset("Asset0"))->Data == 0);
+        REQUIRE(static_cast<TestSaveAsset*>(collection.GetAsset("Asset1"))->Data == 1);
+        REQUIRE(static_cast<TestSaveAsset*>(collection.GetAsset("Asset2"))->Data == 2);
+        REQUIRE(static_cast<TestSaveAsset*>(collection.GetAsset("Asset3"))->Data == 3);
+    }
 }
