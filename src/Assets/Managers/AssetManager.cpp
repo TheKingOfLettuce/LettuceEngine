@@ -86,7 +86,7 @@ using json = nlohmann::json;
 void AssetManager::SaveToJson(json& j) {
     std::vector<std::pair<std::string, json>> saveData = std::vector<std::pair<std::string, json>>();
     for(const auto& assetCollectionPair : _assets) {
-        std::string saveName = Factory<AssetCollection>::GetSaveName(assetCollectionPair.first);
+        std::string saveName = Factory<AssetCollection>::GetSaveName(typeid(*assetCollectionPair.second).hash_code());
         if (saveName.empty()) {
             Log::Warning("Cannot persist Unique AssetCollection " + std::string(typeid(*assetCollectionPair.second).name()));
         }

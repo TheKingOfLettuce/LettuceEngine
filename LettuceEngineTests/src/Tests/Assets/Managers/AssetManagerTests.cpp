@@ -1,5 +1,7 @@
 #include "catch_amalgamated.hpp"
 #include "Assets/Managers/AssetManager.h"
+#include "Assets/Managers/AssetFactory.h"
+#include "Assets/Managers/AssetCollectionFactory.h"
 
 const char* AssetManagerTAG = "[AssetManager]";
 
@@ -290,5 +292,79 @@ TEST_CASE("AssetManager.UnloadAllAssets Tests", AssetManagerTAG) {
         REQUIRE(AssetManager::GetAssetCollection<Asset>() == nullptr);
         REQUIRE(AssetManager::GetAssetCollection<ImageAsset>() != nullptr);
         REQUIRE(AssetManager::GetAssetCollection<Texture2DAsset>() != nullptr);
+    }
+}
+
+class CounterAsset : public Asset {
+    public:
+        CounterAsset() : Asset() {}
+        CounterAsset(std::string id) : Asset(id) {}
+        int Count = 0;
+
+        void SaveToJson(nlohmann::json& j) const override {
+            Asset::SaveToJson(j);
+            j["count"] = Count;
+        }
+
+        void LoadFromJson(const nlohmann::json& data) override {
+            Asset::LoadFromJson(data);
+            Count = data.at("count");
+        }
+};
+
+class CounterAssetCollection : public AssetTypeCollection<CounterAsset> {
+    public:
+        CounterAssetCollection() : AssetTypeCollection<CounterAsset>() {}
+
+        int TotalCount = 0;
+
+    protected:
+        bool AddAsset(CounterAsset* asset) override {
+            bool added = AssetTypeCollection::AddAsset(asset);
+            if (added)
+                TotalCount += asset->Count;
+            return added;
+        }
+};
+
+REGISTER_ASSET(CounterAsset);
+REGISTER_ASSET_COLLECTION(CounterAssetCollection);
+
+TEST_CASE("AssetManager.LoadFromJson Tests", AssetManagerTAG) {
+    AssetManager::UnloadAllAssets();
+
+    SECTION("Should Save Then Load Specfic Type Collection") {
+        AssetManager::AddAssetCollection<CounterAsset>(new CounterAssetCollection());
+        CounterAsset* asset0 = new CounterAsset("Asset0");
+        CounterAsset* asset1 = new CounterAsset("Asset1");
+        asset1->Count = 1;
+        CounterAsset* asset2 = new CounterAsset("Asset2");
+        asset2->Count = 2;
+        CounterAsset* asset3 = new CounterAsset("Asset3");
+        asset3->Count = 3;
+        
+        AssetManager::AddAsset(asset0);
+        AssetManager::AddAsset(asset1);
+        AssetManager::AddAsset(asset2);
+        AssetManager::AddAsset(asset3);
+
+        nlohmann::json managerJson;
+        AssetManager::SaveToJson(managerJson);
+        REQUIRE(static_cast<const CounterAssetCollection*>(AssetManager::GetAssetCollection<CounterAsset>())->TotalCount == 6);
+        AssetManager::UnloadAllAssets();
+        REQUIRE_FALSE(AssetManager::GetAssetCollection<CounterAsset>());
+        AssetManager::LoadFromJson(managerJson);
+
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset0"));
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset1"));
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset2"));
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset3"));
+
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 0);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 1);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 2);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 3);
+
+        REQUIRE(static_cast<const CounterAssetCollection*>(AssetManager::GetAssetCollection<CounterAsset>())->TotalCount == 6);
     }
 }
