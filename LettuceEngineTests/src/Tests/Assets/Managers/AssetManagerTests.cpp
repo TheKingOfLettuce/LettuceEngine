@@ -361,9 +361,9 @@ TEST_CASE("AssetManager.LoadFromJson Tests", AssetManagerTAG) {
         REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset3"));
 
         REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 0);
-        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 1);
-        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 2);
-        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 3);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset1")->Count == 1);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset2")->Count == 2);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset3")->Count == 3);
 
         REQUIRE(static_cast<const CounterAssetCollection*>(AssetManager::GetAssetCollection<CounterAsset>())->TotalCount == 6);
     }

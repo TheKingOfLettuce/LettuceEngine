@@ -22,6 +22,10 @@ class AssetTypeCollection : public AssetCollection {
             return toReturn;
         }
 
+        size_t GetAssetType() const override {
+            return typeid(T).hash_code();
+        }
+
     protected:
         virtual bool AddAsset(T* asset) {
             return AssetCollection::AddAsset(asset);

@@ -110,6 +110,6 @@ void AssetManager::LoadFromJson(const json& data) {
         }
 
         collection->LoadFromJson(assetCollectionPair.second);
-        AddAssetCollection(collection, typeid(*collection).hash_code());
+        AddAssetCollection(collection, collection->GetAssetType());
     }
 }

@@ -74,6 +74,10 @@ const std::vector<Asset*> AssetCollection::GetAllAssets() const {
     return toReturn;
 }
 
+size_t AssetCollection::GetAssetType() const {
+    return typeid(Asset).hash_code();
+}
+
 using json = nlohmann::json;
 
 void AssetCollection::SaveToJson(json& j) const {
