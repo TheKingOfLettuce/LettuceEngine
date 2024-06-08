@@ -2,7 +2,7 @@ rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(
 .PHONY: BuildStaticLib clean
 
 CXX = g++
-CXXFLAGS = -Wall -g
+CXXFLAGS = -Wall -g -fuse-ld=lld
 
 SRC_DIR = src
 SRC_FILES = $(call rwildcard,src,*.cpp)

@@ -19,7 +19,7 @@ DEP_FILES = $(OBJ_FILES:.o=.d)
 
 BuildTestExe: $(OBJ_FILES)
 	@mkdir -p $(dir $(BUILD_DIR)/)
-	$(CXX) $(CXXFLAGS) $(OBJ_FILES) -I $(INCLUDE_DIR) -I include -L $(LIB_DIR) -lLettuceEngine -lraylib -lgdi32 -lwinmm -o $(BUILD_DIR)/$(EXE_NAME)
+	$(CXX) $(CXXFLAGS) $(OBJ_FILES) -I $(INCLUDE_DIR) -I include -L $(LIB_DIR) -lLettuceEngine -lraylib -lgdi32 -lwinmm -o $(BUILD_DIR)/$(EXE_NAME) -fuse-ld=lld
 
 # Build object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
