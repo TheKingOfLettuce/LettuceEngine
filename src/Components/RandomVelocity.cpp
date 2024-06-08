@@ -1,6 +1,6 @@
 #include "Components/RandomVelocity.h"
 #include "Components/ComponentFactory.h"
-REGISTER(RandomVelocity);
+REGISTER_COMPONENT(RandomVelocity);
 
 using json = nlohmann::json;
 using LettuceEngine::Math::Vector2;

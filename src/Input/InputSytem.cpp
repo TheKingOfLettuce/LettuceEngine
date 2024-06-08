@@ -14,8 +14,7 @@ std::unordered_set<ClickHandler*> _clicks = std::unordered_set<ClickHandler*>();
 
 void InputSystem::GatherInput() {
     _charsPressed.clear();
-    LettuceEngine::Engine* engine = LettuceEngine::Engine::GetInstance();
-    if (engine == nullptr || !engine->IsRunning()) {
+    if (!LettuceEngine::Engine::IsRunning()) {
         throw std::logic_error(std::string("Cannot gather input, engine does not exist or is not running."));
     }
     
@@ -31,7 +30,7 @@ void InputSystem::GatherInput() {
 void InputSystem::GatherClickables() {
     if (!IsMouseButtonPressed(MouseButtons::MOUSE_BUTTON_LEFT)) return;
     LettuceEngine::Math::Vector2 mousePosition = GetMousePosition();
-    std::unordered_set<Collider2D*>* hits = Engine::GetInstance()->CollisionSystem()->FindIntersections(mousePosition);
+    std::unordered_set<Collider2D*>* hits = Engine::CollisionSystem()->FindIntersections(mousePosition);
     _clicks.clear();
     for(Collider2D* hit : *hits) {
         if (!hit->Lettuce()->HasComponent<ClickHandler>()) continue;

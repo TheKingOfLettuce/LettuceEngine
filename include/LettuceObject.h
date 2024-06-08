@@ -11,12 +11,11 @@
 #include "Utils/Callbacks/CallbackWithArg.h"
 
 class Component; // forward declare
-class ComponentData;
 
 class ComponentPair {
         public:
             std::string TypeName;
-            std::string ComponentData;
+            nlohmann::json ComponentData;
     };
 
 class LettuceObjectData {

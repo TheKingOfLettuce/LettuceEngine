@@ -1,6 +1,7 @@
 #include "Drawing/BasicDrawing.h"
 #include "Raylib/raylib.h"
 #include "Engine.h"
+#include "Assets/Managers/RaylibAssetManager.h"
 
 using LColor = LettuceEngine::Math::Color;
 using LVector2 = LettuceEngine::Math::Vector2;
@@ -12,9 +13,7 @@ RColor ConvertEngineColor(const LColor& color) {
 }
 
 bool CanDraw() {
-    LettuceEngine::Engine* engine = LettuceEngine::Engine::GetInstance();
-    if (engine == nullptr) return false;
-    return engine->IsRunning();
+    return LettuceEngine::Engine::IsRunning();
 }
 
 void BasicDrawing::DrawPixel(const LVector2& point, const LColor& color) {
@@ -57,6 +56,13 @@ void BasicDrawing::DrawText(const std::string text, const LVector2& point, float
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
     ::DrawTextEx(::GetFontDefault(), text.data(), ::Vector2({point.X, point.Y}), size, spacing, c);
+}
+
+void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color) {
+    if (!CanDraw()) return;
+    RColor c = ConvertEngineColor(color);
+    Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);
+    ::DrawTexture(tex, point.X, point.Y, c);
 }
 
 LettuceEngine::CollisionSystem::AABB BasicDrawing::MeasureText(const std::string text, float size, float spacing) {

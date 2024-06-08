@@ -5,32 +5,61 @@
 #include "MessageSystem/Messages/EngineMessages.h"
 #include "Logging/Log.h"
 #include <stdexcept>
+#include <mutex>
+#include <thread>
+#include "Assets/Managers/RaylibAssetManager.h"
+#include "Input/InputSystem.h"
 
 using LettuceEngine::Engine;
+using LVector2 = LettuceEngine::Math::Vector2;
+using LettuceEngine::CollisionSystem::AABB;
 
-Engine* Engine::_instance = nullptr;
+static unsigned int _windowWidth;
+static unsigned int _windowHeight;
+static std::string _windowName;
+static unsigned int _fps;
+static bool _isRunning = false;
+static std::thread _loopThread;
+static LettuceEngine::InputSystem _input = LettuceEngine::InputSystem();
+static LettuceObject* _root = new LettuceObject();
+static Collision2DQuadTree* _collisionSystem = new Collision2DQuadTree(AABB(LVector2(1, 1), LVector2(1, 1)));
 
-Engine::Engine() {
-    if (_instance != nullptr) {
-        throw std::logic_error(std::string("Instance of Engine already exists, cannot create new one."));
+void UpdateStep() {
+    UpdateMessage* updateMessage = new UpdateMessage(GetFrameTime());
+    _root->Update(updateMessage);
+    MessageBus::Publish(updateMessage);
+}
+
+void RenderStep() {
+    ::BeginDrawing();
+    ::ClearBackground(GRAY);
+    RenderMessage* renderMessage = new RenderMessage();
+    _root->Render(renderMessage);
+    _collisionSystem->Render(renderMessage);
+    MessageBus::Publish(renderMessage);
+    ::EndDrawing();
+}
+
+void Engine::MainLoop() {
+    Log::Info("Initializing main window");
+    ::SetTargetFPS(_fps);
+    ::InitWindow(_windowWidth, _windowHeight, _windowName.c_str());
+    Log::Info("Window Initialized");
+    // load raylib data that required GPU access
+    RaylibAssetManager::LoadAllAssetManagerGPUData();
+    MessageBus::Publish(new EngineReady());
+    Log::Info("Starting main loop");
+    while (!::WindowShouldClose() && _isRunning) {
+        _input.GatherInput();
+        _input.GatherClickables();
+        UpdateStep();
+        RenderStep();
     }
-    _instance = this;
-    _root = new LettuceObject();
-    _collisionSystem = new Collision2DQuadTree(LettuceEngine::CollisionSystem::AABB(LettuceEngine::Math::Vector2(300, 300), LettuceEngine::Math::Vector2(300, 300)));
-    _input = InputSystem();
-    SetTraceLogCallback(Log::CustomRayLibLog);
+    MessageBus::Publish(new EngineHalting());
+    // Unload Raylib data that cannot persist after CloseWindow()
+    RaylibAssetManager::UnloadAllAssetManagerGPUData();
+    ::CloseWindow();
     _isRunning = false;
-}
-
-Engine::~Engine() {
-    delete _root;
-    if (_instance == this) {
-        _instance = nullptr;
-    }
-}
-
-Engine* Engine::GetInstance() {
-    return _instance;
 }
 
 void Engine::SetWindowSize(unsigned int width, unsigned int height) {
@@ -48,6 +77,15 @@ void Engine::SetWindowFps(unsigned int fps) {
         ::SetTargetFPS(_fps);
 }
 
+void NoRaylibLog(int msgType, const char* text, va_list args) {return;}
+
+void Engine::ToggleRaylibLogs(bool flag) {
+    if (flag)
+        ::SetTraceLogCallback(Log::CustomRayLibLog);
+    else
+        ::SetTraceLogCallback(NoRaylibLog);
+}
+
 void Engine::LoadObject(LettuceObject* obj) {
     _root->AddChild(obj);
 }
@@ -62,41 +100,7 @@ bool Engine::IsRunning() {
 
 void Engine::StartMainLoop() {
     _isRunning = true;
-    _loopThread = std::thread(&Engine::MainLoop, this);
-}
-
-void Engine::MainLoop() {
-    Log::Info("Initializing main window");
-    ::SetTargetFPS(_fps);
-    ::InitWindow(_windowWidth, _windowHeight, _windowName.data());
-    Log::Info("Window Initialized");
-    MessageBus::Publish(new EngineReady());
-    Log::Info("Starting main loop");
-    while (!::WindowShouldClose() && _isRunning) {
-        _input.GatherInput();
-        _input.GatherClickables();
-        UpdateStep();
-        RenderStep();
-    }
-
-    ::CloseWindow();
-    _isRunning = false;
-}
-
-void Engine::UpdateStep() {
-    UpdateMessage* updateMessage = new UpdateMessage(GetFrameTime());
-    _root->Update(updateMessage);
-    MessageBus::Publish(updateMessage);
-}
-
-void Engine::RenderStep() {
-    ::BeginDrawing();
-    ::ClearBackground(GRAY);
-    RenderMessage* renderMessage = new RenderMessage();
-    _root->Render(renderMessage);
-    _collisionSystem->Render(renderMessage);
-    MessageBus::Publish(renderMessage);
-    ::EndDrawing();
+    _loopThread = std::thread(&MainLoop);
 }
 
 void Engine::StopWindow() {
@@ -108,4 +112,18 @@ void Engine::WaitForMainLoopToExit() {
     if (!_isRunning) return;
 
     _loopThread.join();
+}
+
+void Engine::SetCollisionSize(LVector2 size) {
+    Log::Info("Changing collision size to " + size.ToString());
+    std::unordered_set<Collider2D*>* objs = _collisionSystem->GetAllObjects();
+    delete _collisionSystem;
+    _collisionSystem = new Collision2DQuadTree(AABB(size, size));
+    while (!objs->empty()) {
+        Collider2D* obj = objs->begin().operator*();
+        objs->erase(obj);
+        if (!_collisionSystem->Insert(obj))
+            Log::Warning("Failed to insert collider into new input size");
+    }
+    delete objs;
 }

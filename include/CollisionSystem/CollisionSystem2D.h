@@ -16,6 +16,7 @@ class Collision2DQuadTree {
 
         std::unordered_set<Collider2D*>* FindIntersections(const Collider2D* area, std::unordered_set<Collider2D*>* results = nullptr) const;
         std::unordered_set<Collider2D*>* FindIntersections(LettuceEngine::Math::Vector2 point, std::unordered_set<Collider2D*>* results = nullptr) const;
+        std::unordered_set<Collider2D*>* GetAllObjects(std::unordered_set<Collider2D*>* results = nullptr);
     private:
         LettuceEngine::CollisionSystem::AABB _area;
         std::unordered_set<Collider2D*> _objects;

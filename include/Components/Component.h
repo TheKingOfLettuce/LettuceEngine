@@ -21,14 +21,12 @@ class Component {
         void virtual Update(UpdateMessage* msg);
 
         // Misc
-        std::string SaveToData();
-        void LoadFromData(const std::string data);
+        void virtual SaveToJson(nlohmann::json& j);
+        void virtual LoadFromJson(const nlohmann::json& data);
     protected:
         void virtual Enabled();
         void virtual Disabled();
-        void virtual SaveToJson(nlohmann::json& j);
-        void virtual LoadFromJson(const nlohmann::json& data);
-
+    
         LettuceObject* _lettuce;
         bool _enabled;
 };

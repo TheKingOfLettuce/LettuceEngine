@@ -1,7 +1,7 @@
 #include "Components/PrimitiveRenderer.h"
 #include "Components/ComponentFactory.h"
 #include "Drawing/BasicDrawing.h"
-REGISTER(PrimitiveRenderer)
+REGISTER_COMPONENT(PrimitiveRenderer)
 
 using json = nlohmann::json;
 using LettuceEngine::Math::Color;

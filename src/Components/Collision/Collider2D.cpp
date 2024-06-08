@@ -6,7 +6,7 @@
 #include "Drawing/BasicDrawing.h"
 #include "Math/Color.h"
 #include "Components/ComponentFactory.h"
-REGISTER(Collider2D)
+REGISTER_COMPONENT(Collider2D)
 
 using json = nlohmann::json;
 using LettuceEngine::Math::Vector2;
@@ -22,19 +22,19 @@ Collider2D::~Collider2D() {
 
 void Collider2D::Enabled() {
     _callbackID = _lettuce->OnPositionChanged()->AddCallback(&Collider2D::PositionChange, this);
-    Collision2DQuadTree* system = LettuceEngine::Engine::GetInstance()->CollisionSystem();
+    Collision2DQuadTree* system = LettuceEngine::Engine::CollisionSystem();
     if (!system->Insert(this))
         Log::Warning("Collider was not inserted into the system");
 }
 
 void Collider2D::Disabled() {
     _lettuce->OnPositionChanged()->RemoveCallback(_callbackID);
-    Collision2DQuadTree* system = LettuceEngine::Engine::GetInstance()->CollisionSystem();
+    Collision2DQuadTree* system = LettuceEngine::Engine::CollisionSystem();
     system->Remove(this);
 }
 
 void Collider2D::PositionChange(bool hasChanged) {
-    Collision2DQuadTree* system = LettuceEngine::Engine::GetInstance()->CollisionSystem();
+    Collision2DQuadTree* system = LettuceEngine::Engine::CollisionSystem();
     if (hasChanged)
         system->Insert(this);
     else
