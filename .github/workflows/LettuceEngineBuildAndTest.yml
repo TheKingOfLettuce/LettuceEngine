@@ -1,10 +1,10 @@
-name: LettuceEngine Build And Test Static Lib
+name: Build+Test_Windows
 
 on:
   push:
-    branches: [ "develop", "main" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "develop", "main" ]
+    branches: [ "main" ]
 
 jobs:
   build:
