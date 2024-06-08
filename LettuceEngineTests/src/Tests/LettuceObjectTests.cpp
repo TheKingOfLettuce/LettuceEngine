@@ -490,7 +490,7 @@ TEST_CASE("LettuceObject.SaveToData Tests", "[LettuceObject]") {
 		REQUIRE(data.ComponentData.size() == 1);
 		nlohmann::json saveJ;
 		s->SaveToJson(saveJ);
-		REQUIRE(data.ComponentData[0].ComponentData == saveJ.dump());
+		REQUIRE(data.ComponentData[0].ComponentData == saveJ);
 		REQUIRE(data.ComponentData[0].TypeName == Factory<Component>::GetSaveName<SaveComponent>());
 	}
 

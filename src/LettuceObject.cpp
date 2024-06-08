@@ -205,7 +205,7 @@ LettuceObjectData LettuceObject::SaveToData() {
             pair.TypeName = typeName;
             json j;
             c->SaveToJson(j);
-            pair.ComponentData = j.dump();
+            pair.ComponentData = j;
             componentData.push_back(pair);
         }
     }
@@ -236,7 +236,7 @@ void LettuceObject::LoadFromData(LettuceObjectData data) {
             Log::Warning("Attempted to load component [" + pair.TypeName + "] but was not created");
             continue;
         }
-        c->LoadFromJson(json::parse(pair.ComponentData));
+        c->LoadFromJson(pair.ComponentData);
         AddComponent(c, c->GetEnabled());
     }
 

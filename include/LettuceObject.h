@@ -15,7 +15,7 @@ class Component; // forward declare
 class ComponentPair {
         public:
             std::string TypeName;
-            std::string ComponentData;
+            nlohmann::json ComponentData;
     };
 
 class LettuceObjectData {
