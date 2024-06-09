@@ -1,5 +1,5 @@
-#include "Assets/ImageAsset.h"
-#include "Assets/Managers/AssetFactory.h"
+#include "LettuceEngine/Assets/ImageAsset.h"
+#include "LettuceEngine/Assets/Managers/AssetFactory.h"
 REGISTER_ASSET(ImageAsset);
 
 using json = nlohmann::json;

@@ -1,5 +1,5 @@
 #include "catch_amalgamated.hpp"
-#include "Utils/LinkedList.h"
+#include "LettuceEngine/Utils/LinkedList.h"
 
 TEST_CASE("LinkedList.Add Tests", "[LinkedList]") {
     LinkedList<int> list = LinkedList<int>();

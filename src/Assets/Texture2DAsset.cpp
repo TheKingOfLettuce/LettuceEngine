@@ -1,5 +1,5 @@
-#include "Assets/Texture2DAsset.h"
-#include "Assets/Managers/AssetFactory.h"
+#include "LettuceEngine/Assets/Texture2DAsset.h"
+#include "LettuceEngine/Assets/Managers/AssetFactory.h"
 REGISTER_ASSET(Texture2DAsset);
 
 using json = nlohmann::json;

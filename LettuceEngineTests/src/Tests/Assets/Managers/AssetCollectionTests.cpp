@@ -1,6 +1,6 @@
 #include "catch_amalgamated.hpp"
-#include "Assets/Managers/AssetCollection.h"
-#include "Assets/Managers/AssetFactory.h"
+#include "LettuceEngine/Assets/Managers/AssetCollection.h"
+#include "LettuceEngine/Assets/Managers/AssetFactory.h"
 
 const char* AssetCollectionTAG = "[AssetCollection]";
 

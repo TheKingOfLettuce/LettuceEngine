@@ -1,6 +1,6 @@
-#include "Components/Text/TextArea.h"
-#include "Drawing/BasicDrawing.h"
-#include "Logging/Log.h"
+#include "LettuceEngine/Components/Text/TextArea.h"
+#include "LettuceEngine/Drawing/BasicDrawing.h"
+#include "LettuceEngine/Logging/Log.h"
 
 using LettuceEngine::CollisionSystem::AABB;
 using LettuceEngine::Math::Color;

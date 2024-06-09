@@ -1,5 +1,5 @@
 #include "catch_amalgamated.hpp"
-#include "Math/Vector2.h"
+#include "LettuceEngine/Math/Vector2.h"
 
 using LettuceEngine::Math::Vector2;
 using Catch::Matchers::WithinRel;

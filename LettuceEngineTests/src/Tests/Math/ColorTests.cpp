@@ -1,5 +1,5 @@
 #include "catch_amalgamated.hpp"
-#include "Math/Color.h"
+#include "LettuceEngine/Math/Color.h"
 
 using LettuceEngine::Math::Color;
 

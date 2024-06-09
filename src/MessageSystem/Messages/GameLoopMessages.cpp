@@ -1,4 +1,4 @@
-#include "MessageSystem/Messages/GameLoopMessages.h"
+#include "LettuceEngine/MessageSystem/Messages/GameLoopMessages.h"
 
 UpdateMessage::UpdateMessage(float delta) {
     _timeDelta = delta;

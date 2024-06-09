@@ -1,5 +1,5 @@
-#include "Components/RandomVelocity.h"
-#include "Components/ComponentFactory.h"
+#include "LettuceEngine/Components/RandomVelocity.h"
+#include "LettuceEngine/Components/ComponentFactory.h"
 REGISTER_COMPONENT(RandomVelocity);
 
 using json = nlohmann::json;

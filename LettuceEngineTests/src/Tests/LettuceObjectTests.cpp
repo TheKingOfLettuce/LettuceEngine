@@ -1,6 +1,6 @@
 #include "catch_amalgamated.hpp"
-#include "LettuceObject.h"
-#include "Components/ComponentFactory.h"
+#include "LettuceEngine/LettuceObject.h"
+#include "LettuceEngine/Components/ComponentFactory.h"
 #include <unordered_set>
 
 using LettuceEngine::Math::Vector2;

@@ -1,10 +1,10 @@
-#include "Input/InputSystem.h"
+#include "LettuceEngine/Input/InputSystem.h"
 #include "Raylib/raylib.h"
-#include "Engine.h"
+#include "LettuceEngine/Engine.h"
 #include <stdexcept>
-#include "Logging/Log.h"
-#include "MessageSystem/MessageBus.h"
-#include "MessageSystem/MessageBase.h"
+#include "LettuceEngine/Logging/Log.h"
+#include "LettuceEngine/MessageSystem/MessageBus.h"
+#include "LettuceEngine/MessageSystem/MessageBase.h"
 
 using LettuceEngine::KeyCodes;
 using LettuceEngine::InputSystem;

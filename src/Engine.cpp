@@ -1,14 +1,14 @@
-#include "Engine.h"
+#include "LettuceEngine/Engine.h"
 #include "Raylib/raylib.h"
-#include "MessageSystem/MessageBus.h"
-#include "MessageSystem/Messages/GameLoopMessages.h"
-#include "MessageSystem/Messages/EngineMessages.h"
-#include "Logging/Log.h"
+#include "LettuceEngine/MessageSystem/MessageBus.h"
+#include "LettuceEngine/MessageSystem/Messages/GameLoopMessages.h"
+#include "LettuceEngine/MessageSystem/Messages/EngineMessages.h"
+#include "LettuceEngine/Logging/Log.h"
 #include <stdexcept>
 #include <mutex>
 #include <thread>
-#include "Assets/Managers/RaylibAssetManager.h"
-#include "Input/InputSystem.h"
+#include "LettuceEngine/Assets/Managers/RaylibAssetManager.h"
+#include "LettuceEngine/Input/InputSystem.h"
 
 using LettuceEngine::Engine;
 using LVector2 = LettuceEngine::Math::Vector2;

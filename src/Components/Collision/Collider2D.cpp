@@ -1,11 +1,11 @@
-#include "Components/Collision/Collider2D.h"
+#include "LettuceEngine/Components/Collision/Collider2D.h"
 #include <stdexcept>
 #include <string>
-#include "Engine.h"
-#include "CollisionSystem/CollisionSystem2D.h"
-#include "Drawing/BasicDrawing.h"
-#include "Math/Color.h"
-#include "Components/ComponentFactory.h"
+#include "LettuceEngine/Engine.h"
+#include "LettuceEngine/CollisionSystem/CollisionSystem2D.h"
+#include "LettuceEngine/Drawing/BasicDrawing.h"
+#include "LettuceEngine/Math/Color.h"
+#include "LettuceEngine/Components/ComponentFactory.h"
 REGISTER_COMPONENT(Collider2D)
 
 using json = nlohmann::json;

@@ -1,4 +1,4 @@
-#include "Components/Component.h"
+#include "LettuceEngine/Components/Component.h"
 #include <stdexcept>
 #include <string>
 

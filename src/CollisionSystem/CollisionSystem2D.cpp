@@ -1,8 +1,8 @@
-#include "CollisionSystem/CollisionSystem2D.h"
-#include "Math/Vector2.h"
+#include "LettuceEngine/CollisionSystem/CollisionSystem2D.h"
+#include "LettuceEngine/Math/Vector2.h"
 #include <utility>
-#include "Drawing/BasicDrawing.h"
-#include "Math/Color.h"
+#include "LettuceEngine/Drawing/BasicDrawing.h"
+#include "LettuceEngine/Math/Color.h"
 
 using LettuceEngine::CollisionSystem::AABB;
 using LettuceEngine::Math::Vector2;

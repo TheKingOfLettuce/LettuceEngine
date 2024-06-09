@@ -1,6 +1,6 @@
 #include "catch_amalgamated.hpp"
-#include "MessageSystem/MessageHandler.h"
-#include "MessageSystem/MessageBase.h"
+#include "LettuceEngine/MessageSystem/MessageHandler.h"
+#include "LettuceEngine/MessageSystem/MessageBase.h"
 
 TEST_CASE("MessageHandler.AddCallback Tests", "[MessageHandler]") {
 	class AddCallbackHelper {

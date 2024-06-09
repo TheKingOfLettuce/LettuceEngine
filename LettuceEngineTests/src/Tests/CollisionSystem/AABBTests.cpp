@@ -1,5 +1,5 @@
 #include "catch_amalgamated.hpp"
-#include "CollisionSystem/AABB.h"
+#include "LettuceEngine/CollisionSystem/AABB.h"
 
 using LettuceEngine::Math::Vector2;
 using LettuceEngine::CollisionSystem::AABB;

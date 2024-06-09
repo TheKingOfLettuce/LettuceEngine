@@ -1,6 +1,6 @@
-#include "LettuceObject.h"
-#include "Logging/Log.h"
-#include "Components/ComponentFactory.h"
+#include "LettuceEngine/LettuceObject.h"
+#include "LettuceEngine/Logging/Log.h"
+#include "LettuceEngine/Components/ComponentFactory.h"
 
 using json = nlohmann::json;
 using LettuceEngine::Math::Vector2;

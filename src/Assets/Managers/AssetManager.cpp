@@ -1,8 +1,8 @@
-#include "Assets/Managers/AssetManager.h"
-#include "Assets/Managers/RaylibAssetManager.h"
-#include "Assets/Managers/AssetTypeCollection.h"
-#include "Engine.h"
-#include "Assets/Managers/AssetCollectionFactory.h"
+#include "LettuceEngine/Assets/Managers/AssetManager.h"
+#include "LettuceEngine/Assets/Managers/RaylibAssetManager.h"
+#include "LettuceEngine/Assets/Managers/AssetTypeCollection.h"
+#include "LettuceEngine/Engine.h"
+#include "LettuceEngine/Assets/Managers/AssetCollectionFactory.h"
 REGISTER_ASSET_COLLECTION(ImageAssetCollection);
 REGISTER_ASSET_COLLECTION(Texture2DAssetCollection);
 

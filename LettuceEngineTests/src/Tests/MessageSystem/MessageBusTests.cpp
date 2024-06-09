@@ -1,5 +1,5 @@
 #include "catch_amalgamated.hpp"
-#include "MessageSystem/MessageBus.h"
+#include "LettuceEngine/MessageSystem/MessageBus.h"
 
 TEST_CASE("MessageBus.Subscribe Tests", "[MessageBus]") {
 	class SubscribeHelper {

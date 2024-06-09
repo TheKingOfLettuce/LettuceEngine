@@ -1,7 +1,7 @@
-#include "Components/Text/TextInput.h"
-#include "Logging/Log.h"
-#include "Input/InputSystem.h"
-#include "Drawing/BasicDrawing.h"
+#include "LettuceEngine/Components/Text/TextInput.h"
+#include "LettuceEngine/Logging/Log.h"
+#include "LettuceEngine/Input/InputSystem.h"
+#include "LettuceEngine/Drawing/BasicDrawing.h"
 #include <string>
 
 using LettuceEngine::Math::Vector2;

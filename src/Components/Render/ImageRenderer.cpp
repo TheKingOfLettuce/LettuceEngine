@@ -1,7 +1,7 @@
-#include "Components/Render/ImageRenderer.h"
-#include "Components/ComponentFactory.h"
-#include "Drawing/BasicDrawing.h"
-#include "Assets/Managers/AssetManager.h"
+#include "LettuceEngine/Components/Render/ImageRenderer.h"
+#include "LettuceEngine/Components/ComponentFactory.h"
+#include "LettuceEngine/Drawing/BasicDrawing.h"
+#include "LettuceEngine/Assets/Managers/AssetManager.h"
 REGISTER_COMPONENT(ImageRenderer)
 
 using json = nlohmann::json;

@@ -1,5 +1,5 @@
 #include "catch_amalgamated.hpp"
-#include "LettuceObject.h"
+#include "LettuceEngine/LettuceObject.h"
 
 using json = nlohmann::json;
 

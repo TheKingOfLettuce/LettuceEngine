@@ -1,6 +1,6 @@
-#include "Assets/Managers/AssetCollection.h"
+#include "LettuceEngine/Assets/Managers/AssetCollection.h"
 #include <stdexcept>
-#include "Assets/Managers/AssetFactory.h"
+#include "LettuceEngine/Assets/Managers/AssetFactory.h"
 
 AssetCollection::AssetCollection() {
     _assets = std::unordered_map<std::string, Asset*>();

@@ -1,5 +1,5 @@
-#include "Components/Input/ClickHandler.h"
-#include "Logging/Log.h"
+#include "LettuceEngine/Components/Input/ClickHandler.h"
+#include "LettuceEngine/Logging/Log.h"
 
 ClickHandler::ClickHandler() : Component() {
     _continousCallback = false;
