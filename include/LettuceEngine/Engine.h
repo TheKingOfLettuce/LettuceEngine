@@ -11,6 +11,10 @@ namespace LettuceEngine {
             static void SetWindowFps(unsigned int fps);
             static void SetCollisionSize(LettuceEngine::Math::Vector2 size);
 
+            static LettuceEngine::Math::Vector2 GetWindowSize();
+            static unsigned int GetWindowWidth();
+            static unsigned int GetWindowHeight();
+
             static void ToggleRaylibLogs(bool flag);
 
             static Collision2DQuadTree* CollisionSystem();

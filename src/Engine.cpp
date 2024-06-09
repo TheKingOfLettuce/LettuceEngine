@@ -71,6 +71,18 @@ void Engine::SetWindowName(std::string name) {
     _windowName = name;
 }
 
+LVector2 Engine::GetWindowSize() {
+    return LVector2(_windowWidth, _windowHeight);
+}
+
+unsigned int Engine::GetWindowWidth() {
+    return _windowWidth;
+}
+
+unsigned int Engine::GetWindowHeight() {
+    return _windowHeight;
+}
+
 void Engine::SetWindowFps(unsigned int fps) {
     _fps = fps;
     if (_isRunning)
