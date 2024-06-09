@@ -9,6 +9,7 @@ class Collision2DQuadTree {
         ~Collision2DQuadTree();
 
         void Render(RenderMessage* msg) const;
+        void ToggleRender(bool flag);
 
         bool Insert(Collider2D* object);
         bool Remove(Collider2D* object);
@@ -21,6 +22,7 @@ class Collision2DQuadTree {
         LettuceEngine::CollisionSystem::AABB _area;
         std::unordered_set<Collider2D*> _objects;
         Collision2DQuadTree* _children[4];
+        bool _shouldRender;
 
         void Split();
         void Unsplit();

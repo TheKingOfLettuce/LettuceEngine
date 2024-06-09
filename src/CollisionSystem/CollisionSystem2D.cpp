@@ -16,6 +16,7 @@ Collision2DQuadTree::Collision2DQuadTree(AABB size) {
     for(int i = 0; i < 4; i++) {
         _children[i] = nullptr;
     }
+    _shouldRender = false;
 }
 
 Collision2DQuadTree::~Collision2DQuadTree() {
@@ -26,6 +27,7 @@ Collision2DQuadTree::~Collision2DQuadTree() {
 }
 
 void Collision2DQuadTree::Render(RenderMessage* msg) const {
+    if (!_shouldRender) return;
     if (IsLeaf()) {
         BasicDrawing::DrawRectangleLines(_area.GetOffset(), Color(0, 0, 255, 255), _area.GetHalfSize());
         return;
@@ -34,6 +36,10 @@ void Collision2DQuadTree::Render(RenderMessage* msg) const {
     for(int i = 0; i < 4; i++) {
         _children[i]->Render(msg);
     }
+}
+
+void Collision2DQuadTree::ToggleRender(bool flag) {
+    _shouldRender = flag;
 }
 
 bool Collision2DQuadTree::Insert(Collider2D* object) {
