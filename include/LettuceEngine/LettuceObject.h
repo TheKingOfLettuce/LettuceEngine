@@ -44,6 +44,7 @@ class LettuceObject {
         LettuceEngine::Math::Vector2 Scale() const;
         bool const Enabled();
         size_t const NumChildren();
+        LettuceObject* GetParent();
 
         // Setters
         void SetPosition(LettuceEngine::Math::Vector2 newPos);
@@ -106,6 +107,7 @@ class LettuceObject {
         CallbackWithArg<bool>* OnPositionChanged();
         void LoadFromData(LettuceObjectData data);
         LettuceObjectData SaveToData();
+        void Destroy();
         
     protected:
         LettuceEngine::Math::Vector2 _position;
@@ -115,4 +117,5 @@ class LettuceObject {
         bool _enabled;
         std::vector<LettuceObject*>* _children;
         CallbackWithArg<bool>* _positionChangeCallback;
+        LettuceObject* _parent;
 };

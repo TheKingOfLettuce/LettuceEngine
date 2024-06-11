@@ -9,6 +9,7 @@
 #include <thread>
 #include "LettuceEngine/Assets/Managers/RaylibAssetManager.h"
 #include "LettuceEngine/Input/InputSystem.h"
+#include <stack>
 
 using LettuceEngine::Engine;
 using LVector2 = LettuceEngine::Math::Vector2;
@@ -23,11 +24,19 @@ static std::thread _loopThread;
 static LettuceEngine::InputSystem _input = LettuceEngine::InputSystem();
 static LettuceObject* _root = new LettuceObject();
 static Collision2DQuadTree* _collisionSystem = new Collision2DQuadTree(AABB(LVector2(1, 1), LVector2(1, 1)));
+static std::stack<LettuceObject*> _deleteStack = std::stack<LettuceObject*>();
 
 void UpdateStep() {
     UpdateMessage* updateMessage = new UpdateMessage(GetFrameTime());
     _root->Update(updateMessage);
     MessageBus::Publish(updateMessage);
+    while (!_deleteStack.empty()) {
+        LettuceObject* lettuce = _deleteStack.top();
+        _deleteStack.pop();
+        if (lettuce->GetParent() != nullptr)
+            lettuce->GetParent()->RemoveChild(lettuce);
+        delete lettuce;
+    }
 }
 
 void RenderStep() {
@@ -100,6 +109,10 @@ void Engine::ToggleRaylibLogs(bool flag) {
 
 void Engine::LoadObject(LettuceObject* obj) {
     _root->AddChild(obj);
+}
+
+void Engine::RemoveObject(LettuceObject* obj) {
+    _deleteStack.push(obj);
 }
 
 Collision2DQuadTree* Engine::CollisionSystem() {

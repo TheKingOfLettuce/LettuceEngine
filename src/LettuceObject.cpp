@@ -1,6 +1,7 @@
 #include "LettuceEngine/LettuceObject.h"
 #include "LettuceEngine/Logging/Log.h"
 #include "LettuceEngine/Components/ComponentFactory.h"
+#include "LettuceEngine/Engine.h"
 
 using json = nlohmann::json;
 using LettuceEngine::Math::Vector2;
@@ -118,23 +119,22 @@ void LettuceObject::AddChild(LettuceObject* child) {
     }
 
     _children->push_back(child);
+    child->_parent = this;
 }
 
 bool LettuceObject::RemoveChild(LettuceObject* child) {
-    for (int i = 0; i < _children->size(); i++) {
-        if (_children->operator[](i) == child) {
-            _children->erase(_children->begin()+i);
-            return true;
-        }
-    }
-
-    return false;
+    int childIndex = GetChildIndex(child);
+    if (childIndex == -1)
+        return false;
+    RemoveChildAt(childIndex);
+    return true;
 }
 
 LettuceObject* LettuceObject::RemoveChildAt(int index) {
     LettuceObject* toReturn = GetChildAt(index);
     if (toReturn != nullptr)
         _children->erase(_children->begin() + index);
+    toReturn->_parent = nullptr;
     return toReturn;
 }
 
@@ -224,6 +224,15 @@ LettuceObjectData LettuceObject::SaveToData() {
 
 CallbackWithArg<bool>* LettuceObject::OnPositionChanged() {
     return _positionChangeCallback;
+}
+
+LettuceObject* LettuceObject::GetParent() {
+    return _parent;
+}
+
+void LettuceObject::Destroy() {
+    LettuceEngine::Engine::RemoveObject(this);
+    SetEnable(false);
 }
 
 void LettuceObject::LoadFromData(LettuceObjectData data) {
