@@ -50,6 +50,7 @@ void Collider2D::SetBox(LettuceEngine::CollisionSystem::AABB box) {
 }
 
 void Collider2D::Render(RenderMessage* msg) {
+    if (!LettuceEngine::Engine::IsDebugView()) return;
     BasicDrawing::DrawRectangleLines(_box.GetOffset() + _lettuce->Position(), Color(0, 255, 0, 255), _box.GetHalfSize());
 }
 

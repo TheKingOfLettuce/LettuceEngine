@@ -1,6 +1,7 @@
 #include "LettuceEngine/Components/Text/TextArea.h"
 #include "LettuceEngine/Drawing/BasicDrawing.h"
 #include "LettuceEngine/Logging/Log.h"
+#include "LettuceEngine/Engine.h"
 
 using LettuceEngine::CollisionSystem::AABB;
 using LettuceEngine::Math::Color;
@@ -32,11 +33,13 @@ TextArea::TextArea() : Component() {
 TextArea::~TextArea() {}
 
 void TextArea::Render(RenderMessage* msg) {
-    BasicDrawing::DrawRectangleLines(_boundingArea.GetOffset() + _lettuce->Position(), Color(255, 255, 0, 255), _boundingArea.GetHalfSize());
+    if (LettuceEngine::Engine::IsDebugView())
+        BasicDrawing::DrawRectangleLines(_boundingArea.GetOffset() + _lettuce->Position(), Color(255, 255, 0, 255), _boundingArea.GetHalfSize());
     for (TextLine line : _lines) {
         if (line.LineText != "")
             BasicDrawing::DrawText(line.LineText, line.DrawPosition + _lettuce->Position(), _currentSize, _currentSpacing, _color);
-        BasicDrawing::DrawRectangleLines(line.CurrentBox.GetOffset() + _lettuce->Position(), Color(255, 255, 0, 255), line.CurrentBox.GetHalfSize());
+        if (LettuceEngine::Engine::IsDebugView())
+            BasicDrawing::DrawRectangleLines(line.CurrentBox.GetOffset() + _lettuce->Position(), Color(255, 255, 0, 255), line.CurrentBox.GetHalfSize());
     }
 }
 

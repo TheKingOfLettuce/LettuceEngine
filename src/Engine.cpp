@@ -139,3 +139,13 @@ void Engine::SetCollisionSize(LVector2 size) {
     }
     delete objs;
 }
+
+bool Engine::IsDebugView() {
+    return _isDebugView;
+}
+
+void Engine::SetDebugView(bool flag) {
+    _isDebugView = flag;
+}
+
+bool Engine::_isDebugView = false;

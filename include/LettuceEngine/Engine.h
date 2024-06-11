@@ -20,11 +20,17 @@ namespace LettuceEngine {
             static Collision2DQuadTree* CollisionSystem();
             static bool IsRunning();
 
+            static bool IsDebugView();
+            static void SetDebugView(bool flag);
+
             static void StopWindow();
             static void LoadObject(LettuceObject* obj);
             static void StartMainLoop();
             static void MainLoop();
 
             static void WaitForMainLoopToExit();
+
+        private:
+            static bool _isDebugView;
     };
 }
