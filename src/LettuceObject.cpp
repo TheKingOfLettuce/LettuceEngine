@@ -60,10 +60,6 @@ bool LettuceObject::RemoveComponent(Component* component) {
         if (componentList->operator[](i) != component) continue;
 
         componentList->erase(componentList->begin() + i);
-        if (componentList->size() == 0) {
-            delete componentList;
-            _components->erase(toRemove);
-        }
         return true;
     }
     return false;
@@ -75,7 +71,7 @@ void LettuceObject::SetEnable(bool flag) {
     for (auto kv: *_components) {
         size_t componentType = kv.first;
         std::vector<Component*>* componentList = _components->at(componentType);
-        for (int i = 0; i < componentList->size(); i++) {
+        for (size_t i = 0; i < componentList->size(); i++) {
             componentList->operator[](i)->SetEnabled(flag);
         }
     }
@@ -95,7 +91,8 @@ void LettuceObject::Update(UpdateMessage* msg) {
         }
     }
 
-    for (LettuceObject* child : *_children) {
+    for (size_t i = 0; i < _children->size(); i++) {
+        LettuceObject* child = _children->operator[](i);
         if (!child->Enabled()) continue;
         child->Update(msg);
     }
@@ -136,18 +133,15 @@ bool LettuceObject::RemoveChild(LettuceObject* child) {
 
 LettuceObject* LettuceObject::RemoveChildAt(int index) {
     LettuceObject* toReturn = GetChildAt(index);
-    if (toReturn != nullptr)
+    if (toReturn != nullptr) {
         _children->erase(_children->begin() + index);
-    toReturn->_parent = nullptr;
+        toReturn->_parent = nullptr;
+    }
     return toReturn;
 }
 
 LettuceObject* LettuceObject::GetChildAt(int index) const {
-    if (index < 0 || index >= _children->size()) {
-        throw std::out_of_range("index is out of range");
-    }
-
-    return _children->operator[](index);
+    return _children->at(index);
 }
 
 int LettuceObject::GetChildIndex(LettuceObject* child) const {

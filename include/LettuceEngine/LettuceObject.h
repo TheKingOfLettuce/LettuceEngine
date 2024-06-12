@@ -59,10 +59,6 @@ class LettuceObject {
             std::vector<Component*>* componentList = _components->at(toRemove);
             T* toReturn = static_cast<T*>(componentList->at(0));
             componentList->erase(componentList->begin());
-            if (componentList->size() == 0) {
-                delete componentList;
-                _components->erase(toRemove);
-            }
 
             return toReturn;
         }
@@ -91,7 +87,8 @@ class LettuceObject {
         template <typename T>
         bool HasComponent() const {
             size_t toRemove = typeid(T).hash_code();
-            return _components->find(toRemove) != _components->end();
+            if (_components->find(toRemove) == _components->end()) return false;
+            return _components->at(toRemove)->size() != 0;
         }
         void Update(UpdateMessage* msg);
         void Render(RenderMessage* msg) const;
