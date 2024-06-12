@@ -5,7 +5,7 @@
 
 class Collision2DQuadTree {
     public:
-        Collision2DQuadTree(LettuceEngine::CollisionSystem::AABB size);
+        Collision2DQuadTree(LettuceEngine::CollisionSystem::AABB size, int maxObjects = 4);
         ~Collision2DQuadTree();
 
         void Render(RenderMessage* msg) const;
@@ -21,6 +21,7 @@ class Collision2DQuadTree {
         LettuceEngine::CollisionSystem::AABB _area;
         std::unordered_set<Collider2D*> _objects;
         Collision2DQuadTree* _children[4];
+        int _maxObjects;
 
         void Split();
         void Unsplit();

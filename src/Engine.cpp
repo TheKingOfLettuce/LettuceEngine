@@ -139,11 +139,11 @@ void Engine::WaitForMainLoopToExit() {
     _loopThread.join();
 }
 
-void Engine::SetCollisionSize(LVector2 size) {
+void Engine::SetCollisionSize(LVector2 size, int maxObjects) {
     Log::Info("Changing collision size to " + size.ToString());
     std::unordered_set<Collider2D*>* objs = _collisionSystem->GetAllObjects();
     delete _collisionSystem;
-    _collisionSystem = new Collision2DQuadTree(AABB(size, size));
+    _collisionSystem = new Collision2DQuadTree(AABB(size, size), maxObjects);
     while (!objs->empty()) {
         Collider2D* obj = objs->begin().operator*();
         objs->erase(obj);

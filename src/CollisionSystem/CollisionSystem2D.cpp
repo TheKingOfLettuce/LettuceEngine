@@ -9,14 +9,13 @@ using LettuceEngine::CollisionSystem::AABB;
 using LettuceEngine::Math::Vector2;
 using LettuceEngine::Math::Color;
 
-static const int MAX_OBJECTS = 4;
-
-Collision2DQuadTree::Collision2DQuadTree(AABB size) {
+Collision2DQuadTree::Collision2DQuadTree(AABB size, int maxObjects) {
     _area = size;
     _objects = std::unordered_set<Collider2D*>();
     for(int i = 0; i < 4; i++) {
         _children[i] = nullptr;
     }
+    _maxObjects = maxObjects;
 }
 
 Collision2DQuadTree::~Collision2DQuadTree() {
@@ -41,18 +40,21 @@ void Collision2DQuadTree::Render(RenderMessage* msg) const {
 bool Collision2DQuadTree::Insert(Collider2D* object) {
     if (!object->Intersects(_area)) return false;
 
-    if (_objects.size() < MAX_OBJECTS && IsLeaf()) {
+    if (_objects.size() < _maxObjects && IsLeaf()) {
         _objects.emplace(object);
         return true;
     }
 
-    if (IsLeaf())
+    if (IsLeaf() && _area.GetHalfSize().X > .5)
         Split();
 
-    for (int i = 0; i < 4; i++) {
-        if (_children[i]->Insert(object))
-            return true;
+    if (!IsLeaf()) {
+        for (int i = 0; i < 4; i++) {
+            if (_children[i]->Insert(object))
+                return true;
+        }
     }
+    
 
     _objects.emplace(object);
     return true;
@@ -87,13 +89,13 @@ void Collision2DQuadTree::Split() {
     if (_children[0] != nullptr) return;
     Vector2 newHalfs = _area.GetHalfSize() / 2;
     Vector2 newOffset = _area.GetOffset() + Vector2(-newHalfs.X, newHalfs.Y);
-    _children[0] = new Collision2DQuadTree(AABB(newHalfs, newOffset));
+    _children[0] = new Collision2DQuadTree(AABB(newHalfs, newOffset), _maxObjects);
     newOffset = _area.GetOffset() + newHalfs;
-    _children[1] = new Collision2DQuadTree(AABB(newHalfs, newOffset));
+    _children[1] = new Collision2DQuadTree(AABB(newHalfs, newOffset), _maxObjects);
     newOffset = _area.GetOffset() - newHalfs;
-    _children[2] = new Collision2DQuadTree(AABB(newHalfs, newOffset));
+    _children[2] = new Collision2DQuadTree(AABB(newHalfs, newOffset), _maxObjects);
     newOffset = _area.GetOffset() + Vector2(newHalfs.X, -newHalfs.Y);
-    _children[3] = new Collision2DQuadTree(AABB(newHalfs, newOffset));
+    _children[3] = new Collision2DQuadTree(AABB(newHalfs, newOffset), _maxObjects);
 
     std::unordered_set<Collider2D*> newValues = std::unordered_set<Collider2D*>();
     for(Collider2D* object : _objects) {

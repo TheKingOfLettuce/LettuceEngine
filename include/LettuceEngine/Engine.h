@@ -9,7 +9,7 @@ namespace LettuceEngine {
             static void SetWindowSize(unsigned int width, unsigned int height);
             static void SetWindowName(std::string name);
             static void SetWindowFps(unsigned int fps);
-            static void SetCollisionSize(LettuceEngine::Math::Vector2 size);
+            static void SetCollisionSize(LettuceEngine::Math::Vector2 size, int maxObjects = 4);
 
             static LettuceEngine::Math::Vector2 GetWindowSize();
             static unsigned int GetWindowWidth();
