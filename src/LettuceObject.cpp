@@ -12,7 +12,7 @@ LettuceObject::LettuceObject() {
     _scale = Vector2(1.0f, 1.0f);
     _enabled = true;
 
-    _components = new std::unordered_map<size_t, LinkedList<Component*>*>();
+    _components = new std::unordered_map<size_t, std::vector<Component*>*>();
     _children = new std::vector<LettuceObject*>();
     _positionChangeCallback = new CallbackWithArg<bool>();
 }
@@ -20,9 +20,10 @@ LettuceObject::LettuceObject() {
 LettuceObject::~LettuceObject() {
     for (auto kv: *_components) {
         size_t componentType = kv.first;
-        LinkedList<Component*>* componentList = _components->at(componentType);
-        while (componentList->Size() != 0) {
-            delete componentList->RemoveAt(0);
+        std::vector<Component*>* componentList = _components->at(componentType);
+        while (componentList->size() != 0) {
+            delete componentList->operator[](0);
+            componentList->erase(componentList->begin());
         }
 
         delete componentList;
@@ -43,9 +44,9 @@ void LettuceObject::AddComponent(Component* component, bool startEnabled) {
 
     size_t componentType = typeid(*component).hash_code();
     if (_components->find(componentType) == _components->end()) {
-        _components->emplace(componentType, new LinkedList<Component*>());
+        _components->emplace(componentType, new std::vector<Component*>());
     }
-    _components->at(componentType)->Add(component);
+    _components->at(componentType)->push_back(component);
     component->Init(this);
     component->Start();
     component->SetEnabled(startEnabled);
@@ -54,9 +55,12 @@ void LettuceObject::AddComponent(Component* component, bool startEnabled) {
 bool LettuceObject::RemoveComponent(Component* component) {
     size_t toRemove = typeid(component).hash_code();
     if (_components->find(toRemove) == _components->end()) return false;
-    LinkedList<Component*>* componentList = _components->at(toRemove);
-    if (componentList->Remove(component)) {
-        if (componentList->Size() == 0) {
+    std::vector<Component*>* componentList = _components->at(toRemove);
+    for (size_t i = 0; i < componentList->size();) {
+        if (componentList->operator[](i) != component) continue;
+
+        componentList->erase(componentList->begin() + i);
+        if (componentList->size() == 0) {
             delete componentList;
             _components->erase(toRemove);
         }
@@ -70,9 +74,9 @@ void LettuceObject::SetEnable(bool flag) {
     _enabled = flag;
     for (auto kv: *_components) {
         size_t componentType = kv.first;
-        LinkedList<Component*>* componentList = _components->at(componentType);
-        for (int i = 0; i < componentList->Size(); i++) {
-            componentList->Get(i)->SetEnabled(flag);
+        std::vector<Component*>* componentList = _components->at(componentType);
+        for (int i = 0; i < componentList->size(); i++) {
+            componentList->operator[](i)->SetEnabled(flag);
         }
     }
 
@@ -83,9 +87,9 @@ void LettuceObject::SetEnable(bool flag) {
 
 void LettuceObject::Update(UpdateMessage* msg) {
     for (auto const& pair : *_components) {
-        LinkedList<Component*>* componentList = pair.second;
-        for (int i = 0; i < componentList->Size(); i++) {
-            Component* c = componentList->Get(i);
+        std::vector<Component*>* componentList = pair.second;
+        for (size_t i = 0; i < componentList->size(); i++) {
+            Component* c = componentList->operator[](i);
             if (!c->GetEnabled()) continue;
             c->Update(msg);
         }
@@ -97,11 +101,11 @@ void LettuceObject::Update(UpdateMessage* msg) {
     }
 }
 
-void LettuceObject::Render(RenderMessage* msg) {
+void LettuceObject::Render(RenderMessage* msg) const {
     for (auto const& pair : *_components) {
-        LinkedList<Component*>* componentList = pair.second;
-        for (int i = 0; i < componentList->Size(); i++) {
-            Component* c = componentList->Get(i);
+        std::vector<Component*>* componentList = pair.second;
+        for (size_t i = 0; i < componentList->size(); i++) {
+            Component* c = componentList->operator[](i);
             if (!c->GetEnabled()) continue;
             c->Render(msg);
         }
@@ -138,7 +142,7 @@ LettuceObject* LettuceObject::RemoveChildAt(int index) {
     return toReturn;
 }
 
-LettuceObject* LettuceObject::GetChildAt(int index) {
+LettuceObject* LettuceObject::GetChildAt(int index) const {
     if (index < 0 || index >= _children->size()) {
         throw std::out_of_range("index is out of range");
     }
@@ -146,8 +150,8 @@ LettuceObject* LettuceObject::GetChildAt(int index) {
     return _children->operator[](index);
 }
 
-int LettuceObject::GetChildIndex(LettuceObject* child) {
-    for (int i = 0; i < _children->size(); i++) {
+int LettuceObject::GetChildIndex(LettuceObject* child) const {
+    for (size_t i = 0; i < _children->size(); i++) {
         if (_children->operator[](i) == child) {
             return i;
         }
@@ -173,7 +177,7 @@ void LettuceObject::SetPosition(Vector2 newPos) {
     }
 }
 
-float const LettuceObject::Rotation() {
+float const LettuceObject::Rotation() const {
     return _rotation;
 }
 
@@ -181,22 +185,22 @@ Vector2 LettuceObject::Scale() const {
     return _scale;
 }
 
-bool const LettuceObject::Enabled() {
+bool LettuceObject::Enabled() const {
     return _enabled;
 }
 
-size_t const LettuceObject::NumChildren() {
+size_t LettuceObject::NumChildren() const {
     return _children->size();
 }
 
-LettuceObjectData LettuceObject::SaveToData() {
+LettuceObjectData LettuceObject::SaveToData() const {
     std::vector<ComponentPair> componentData = std::vector<ComponentPair>();
 
     for (auto const& pair : *_components) {
-        LinkedList<Component*>* componentList = pair.second;
-        for (int i = 0; i < componentList->Size(); i++) {
+        std::vector<Component*>* componentList = pair.second;
+        for (size_t i = 0; i < componentList->size(); i++) {
             ComponentPair pair = ComponentPair();
-            Component* c = componentList->Get(i);
+            Component* c = componentList->operator[](i);
             const std::string typeName = Factory<Component>::GetSaveName(typeid(*c).hash_code());
             if (typeName.empty())  {
                 Log::Info("Received an empty component type when saving LettuceObject");
@@ -222,11 +226,11 @@ LettuceObjectData LettuceObject::SaveToData() {
     return data;
 }
 
-CallbackWithArg<bool>* LettuceObject::OnPositionChanged() {
+CallbackWithArg<bool>* LettuceObject::OnPositionChanged() const {
     return _positionChangeCallback;
 }
 
-LettuceObject* LettuceObject::GetParent() {
+LettuceObject* LettuceObject::GetParent() const {
     return _parent;
 }
 

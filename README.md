@@ -46,7 +46,6 @@ The following have unit tests written for them:
 - Color
 - Component
 - LettuceObject
-- LinkedList
 - MessageBus
 - MessageHandler
 - Vector2

@@ -2,7 +2,7 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <string>
-#include "LettuceEngine/Utils/LinkedList.h"
+#include <vector>
 
 template <typename T>
 class CallbackHandlerBase {
@@ -71,47 +71,42 @@ template <typename T>
 class MessageHandler : public MessageHandlerBase {
     public:
         MessageHandler() {
-            _callbacks = new LinkedList<CallbackHandlerBase<T>*>();
+            _callbacks = std::vector<CallbackHandlerBase<T>*>();
             _messageType = typeid(T).hash_code();
         }
 
         ~MessageHandler() {
-            while(_callbacks->Size() != 0) {
-                delete _callbacks->RemoveAt(0);
+            for (size_t i = 0; i < _callbacks.size(); i++) {
+                delete _callbacks[i];
             }
-            delete _callbacks;
         }
 
         void AddCallback(CallbackHandlerBase<T>* callback) {
             if (callback == nullptr) {
                 throw std::invalid_argument("MessageHandler was given a null callback");
             }
-            _callbacks->Add(callback);
+            _callbacks.push_back(callback);
         }
 
         void RemoveCallback(CallbackHandlerBase<T>* callback) {
             if (callback == nullptr) return;
-            Node<CallbackHandlerBase<T>*>* curent = _callbacks->GetHead();
-            int count = 0;
-            while (curent != nullptr) {
-                if (*callback == curent->Data) {
-                    delete _callbacks->RemoveAt(count);
+            for (size_t i = 0; i < _callbacks.size(); i++) {
+                CallbackHandlerBase<T>* current = _callbacks[i];
+                if (*callback == current) {
+                    delete _callbacks[i];
+                    _callbacks.erase(_callbacks.begin() + i);
                     break;
                 }
-                count++;
-                curent = curent->Next;
             }
 
             delete callback;
         }
 
         void HandleCallback(T* message) {
-            Node<CallbackHandlerBase<T>*>* current = _callbacks->GetHead();
-            while (current != nullptr) {
-                current->Data->HandleCallback(message);
-                current = current->Next;
+            for (size_t i = 0; i < _callbacks.size(); i++) {
+                _callbacks[i]->HandleCallback(message);
             }
         }
     protected:
-        LinkedList<CallbackHandlerBase<T>*>* _callbacks;
+        std::vector<CallbackHandlerBase<T>*> _callbacks;
 };
