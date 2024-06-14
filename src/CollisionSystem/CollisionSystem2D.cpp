@@ -115,16 +115,19 @@ void Collision2DQuadTree::Split() {
     _objects = std::move(newValues);
 }
 
-std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(const Collider2D* area, std::unordered_set<Collider2D*>* results) const {
+std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(const Collider2D* area, std::unordered_set<Collider2D*>* results, size_t numResults) const {
     if (results == nullptr) {
         results = new std::unordered_set<Collider2D*>();
     }
-
+    if (numResults != 0 && results->size() >= numResults)
+        return results;
     if (!area->Intersects(_area)) return results;
 
     for(Collider2D* object : _objects) {
         if (area->Intersects(object))
             results->emplace(object);
+        if (numResults != 0 && results->size() >= numResults)
+            return results;
     }
 
     if (IsLeaf()) return results;
@@ -136,15 +139,19 @@ std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(const Co
     return results;
 }
 
-std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(Vector2 point, std::unordered_set<Collider2D*>* results) const {
+std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(Vector2 point, std::unordered_set<Collider2D*>* results, size_t numResults) const {
     if (results == nullptr) {
         results = new std::unordered_set<Collider2D*>();
     }
+    if (numResults != 0 && results->size() >= numResults)
+        return results;
     if (!_area.ContainsPoint(point)) return results;
 
     for(Collider2D* obj : _objects) {
         if (obj->Contains(point))
             results->emplace(obj);
+        if (numResults != 0 && results->size() >= numResults)
+            return results;
     }
 
     if (IsLeaf()) return results;

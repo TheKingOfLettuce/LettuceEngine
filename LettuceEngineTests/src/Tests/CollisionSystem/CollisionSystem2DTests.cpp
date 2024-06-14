@@ -247,4 +247,31 @@ TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
         REQUIRE_FALSE(hits->find(collider2) == hits->end());
         delete hits;
     }
+
+    SECTION("Should find overlapped colliders with area with max results") {
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        LettuceObject lettuce1 = LettuceObject();
+        lettuce1.SetPosition(Vector2(10, 10));
+        Collider2D* collider1 = new Collider2D();
+        lettuce1.AddComponent(collider1, false);
+        REQUIRE(system.Insert(collider1));
+
+        LettuceObject lettuce2 = LettuceObject();
+        lettuce2.SetPosition(Vector2(10.25, 10.25));
+        Collider2D* collider2 = new Collider2D();
+        lettuce2.AddComponent(collider2, false);
+        REQUIRE(system.Insert(collider2));
+
+        LettuceObject lettuceArea = LettuceObject();
+        Collider2D* colliderArea = new Collider2D();
+        colliderArea->SetBox(AABB(Vector2(10, 10), Vector2()));
+        lettuceArea.AddComponent(colliderArea, false);
+
+        lettuceArea.SetPosition(Vector2(10.1, 10.1));
+        std::unordered_set<Collider2D*>* hits = system.FindIntersections(colliderArea);
+        REQUIRE(hits->size() == 2);
+        delete hits;
+        hits = system.FindIntersections(colliderArea, nullptr, 1);
+        REQUIRE(hits->size() == 1);
+    }
 }
