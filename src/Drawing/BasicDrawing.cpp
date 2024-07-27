@@ -34,10 +34,11 @@ void BasicDrawing::DrawElipse(const LVector2& center, const LColor& color, const
     ::DrawEllipse(center.X, center.Y, radius.X, radius.Y, c);
 }
 
-void BasicDrawing::DrawRectangle(const LVector2 &center, const LColor &color, const LVector2 &halfSize) {
+void BasicDrawing::DrawRectangle(const LVector2 &center, const LColor &color, const LVector2 &halfSize, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
-    ::DrawRectangle(center.X - halfSize.X, center.Y - halfSize.Y, halfSize.X * 2, halfSize.Y * 2, c);
+    ::DrawRectanglePro(::Rectangle({center.X - halfSize.X, center.Y - halfSize.Y, halfSize.X * 2, halfSize.Y * 2}), 
+        ::Vector2(), rotation, c);
 }
 
 void BasicDrawing::DrawRectangleLines(const LVector2 &center, const LColor &color, const LVector2 &halfSize) {
@@ -52,17 +53,18 @@ void BasicDrawing::DrawText(const std::string text, const LVector2& point, const
     ::DrawText(text.data(), point.X, point.Y, size, c);
 }
 
-void BasicDrawing::DrawText(const std::string text, const LVector2& point, float size, float spacing, const LColor& color) {
+void BasicDrawing::DrawText(const std::string text, const LVector2& point, float size, float spacing, const LColor& color, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
-    ::DrawTextEx(::GetFontDefault(), text.data(), ::Vector2({point.X, point.Y}), size, spacing, c);
+    ::DrawTextPro(::GetFontDefault(), text.data(), ::Vector2({point.X, point.Y}), 
+        ::Vector2(), rotation, size, spacing, c);
 }
 
-void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color) {
+void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
     Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);
-    ::DrawTexture(tex, point.X, point.Y, c);
+    ::DrawTextureEx(tex, ::Vector2({point.X, point.Y}), rotation, 1, c);
 }
 
 LettuceEngine::CollisionSystem::AABB BasicDrawing::MeasureText(const std::string text, float size, float spacing) {

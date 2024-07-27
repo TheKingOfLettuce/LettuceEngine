@@ -175,8 +175,16 @@ float const LettuceObject::Rotation() const {
     return _rotation;
 }
 
+void LettuceObject::SetRotation(float rotation) {
+    _rotation = rotation;
+}
+
 Vector2 LettuceObject::Scale() const {
     return _scale;
+}
+
+void LettuceObject::SetScale(Vector2 scale) {
+    _scale = scale;
 }
 
 bool LettuceObject::Enabled() const {

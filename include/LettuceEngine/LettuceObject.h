@@ -47,6 +47,8 @@ class LettuceObject {
 
         // Setters
         void SetPosition(LettuceEngine::Math::Vector2 newPos);
+        void SetRotation(float rotation);
+        void SetScale(LettuceEngine::Math::Vector2 scale);
         void SetEnable(bool flag);
 
         // Component Stuff

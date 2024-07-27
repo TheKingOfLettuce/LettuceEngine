@@ -62,7 +62,7 @@ void PrimitiveRenderer::Render(RenderMessage* message) {
             BasicDrawing::DrawElipse(pos, _color, Vector2(_size/4, _size/2));
             break;
         case (Shape::RECTANGLE):
-            BasicDrawing::DrawRectangle(pos, _color, Vector2(_size/2, _size/2));
+            BasicDrawing::DrawRectangle(pos, _color, Vector2(_size/2, _size/2), _lettuce->Rotation());
             break;
     }
 }
