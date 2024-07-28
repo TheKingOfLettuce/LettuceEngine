@@ -56,13 +56,13 @@ void PrimitiveRenderer::Render(RenderMessage* message) {
             BasicDrawing::DrawPixel(pos, _color);
             break;
         case (Shape::CIRCLE):
-            BasicDrawing::DrawCircle(pos, _color, _size/2);
+            BasicDrawing::DrawCircle(pos, _color, _size/2 * _lettuce->Scale().X);
             break;
         case (Shape::ELLIPSE):
-            BasicDrawing::DrawElipse(pos, _color, Vector2(_size/4, _size/2));
+            BasicDrawing::DrawElipse(pos, _color, Vector2(_size/4 * _lettuce->Scale().X,  _size/2 * _lettuce->Scale().Y));
             break;
         case (Shape::RECTANGLE):
-            BasicDrawing::DrawRectangle(pos, _color, Vector2(_size/2, _size/2), _lettuce->Rotation());
+            BasicDrawing::DrawRectangle(pos, _color, Vector2(_size/2  * _lettuce->Scale().X, _size/2 * _lettuce->Scale().Y), _lettuce->Rotation());
             break;
     }
 }

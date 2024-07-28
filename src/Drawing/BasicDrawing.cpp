@@ -60,11 +60,12 @@ void BasicDrawing::DrawText(const std::string text, const LVector2& point, float
         ::Vector2(), rotation, size, spacing, c);
 }
 
-void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color, const float rotation) {
+void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color, const LVector2& scale, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
     Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);
-    ::DrawTextureEx(tex, ::Vector2({point.X, point.Y}), rotation, 1, c);
+    ::DrawTexturePro(tex, ::Rectangle({0, 0, (float)tex.width, (float)tex.height}), 
+        ::Rectangle({point.X, point.Y, tex.width*scale.X, tex.height*scale.Y}), ::Vector2({0, 0}), rotation, c);
 }
 
 LettuceEngine::CollisionSystem::AABB BasicDrawing::MeasureText(const std::string text, float size, float spacing) {

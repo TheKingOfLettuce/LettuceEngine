@@ -16,7 +16,7 @@ class BasicDrawing {
         static void DrawText(const std::string text, const LettuceEngine::Math::Vector2& point, const int size, const LettuceEngine::Math::Color& color);
         static void DrawText(const std::string text, const LettuceEngine::Math::Vector2& point, float size, float spacing, const LettuceEngine::Math::Color& color, const float rotation = 0);
 
-        static void DrawTexture(const LettuceEngine::Math::Vector2& point, Texture2DAsset* texture, const LettuceEngine::Math::Color& color, const float rotation = 0);
+        static void DrawTexture(const LettuceEngine::Math::Vector2& point, Texture2DAsset* texture, const LettuceEngine::Math::Color& color, const LettuceEngine::Math::Vector2& scale, const float rotation = 0);
 
         // Utility
         static LettuceEngine::CollisionSystem::AABB MeasureText(const std::string text, float size, float spacing);

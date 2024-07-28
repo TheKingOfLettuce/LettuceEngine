@@ -35,7 +35,7 @@ void ImageRenderer::Render(RenderMessage* message) {
         BasicDrawing::DrawRectangle(_lettuce->Position(), _color, Vector2(50, 50), _lettuce->Rotation());
         return;
     }
-    BasicDrawing::DrawTexture(_lettuce->Position(), _texture, _color, _lettuce->Rotation());
+    BasicDrawing::DrawTexture(_lettuce->Position(), _texture, _color, _lettuce->Scale(), _lettuce->Rotation());
 }
 
 void ImageRenderer::SaveToJson(json& j) {
