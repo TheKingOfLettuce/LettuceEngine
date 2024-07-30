@@ -121,7 +121,7 @@ std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(const Co
     }
     if (numResults != 0 && results->size() >= numResults)
         return results;
-    if (!_area.ContainsAABB(area->GetBox(), Vector2(), area->Lettuce()->Position())) return results;
+    if (!area->Intersects(_area)) return results;
 
     for(Collider2D* object : _objects) {
         if (area->Intersects(object))
