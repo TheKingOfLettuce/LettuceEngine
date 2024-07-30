@@ -5,12 +5,14 @@
 
 using LettuceEngine::Math::Vector2;
 
+const char* LettuceObjectTag = "[LettuceObject]";
+
 class SaveComponent : public Component {
 
 };
 REGISTER_COMPONENT(SaveComponent);
 
-TEST_CASE("LettuceObject.Position Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.Position Tests", LettuceObjectTag) {
     LettuceObject obj = LettuceObject();
 
     SECTION("Should Be Zero Vector On Start") {
@@ -54,7 +56,46 @@ TEST_CASE("LettuceObject.Position Tests", "[LettuceObject]") {
     }
 }
 
-TEST_CASE("LettuceObject.AddComponent Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.Rotation Tests", LettuceObjectTag) {
+	LettuceObject obj = LettuceObject();
+
+	SECTION("Should default to 0") {
+		REQUIRE(obj.Rotation() == 0);
+	}
+
+	SECTION("Should set normal rotation") {
+		obj.SetRotation(90);
+		REQUIRE(obj.Rotation() == 90);
+		obj.SetRotation(251);
+		REQUIRE(obj.Rotation() == 251);
+		obj.SetRotation(7);
+		REQUIRE(obj.Rotation() == 7);
+		obj.SetRotation(0);
+		REQUIRE(obj.Rotation() == 0);
+	}
+
+	SECTION("Should remove full rotations clockwise") {
+		obj.SetRotation(360);
+		REQUIRE(obj.Rotation() == 0);
+		obj.SetRotation(361);
+		REQUIRE(obj.Rotation() == 1);
+		obj.SetRotation(720);
+		REQUIRE(obj.Rotation() == 0);
+		obj.SetRotation(1869);
+		REQUIRE(obj.Rotation() == 69);
+	}
+
+	SECTION("Should remove full rotations counter-clockwise") {
+		obj.SetRotation(-1);
+		REQUIRE(obj.Rotation() == 359);
+		obj.SetRotation(-720);
+		REQUIRE(obj.Rotation() == 0);
+		obj.SetRotation(-1869);
+		REQUIRE(obj.Rotation() == 291);
+	}
+}
+
+TEST_CASE("LettuceObject.AddComponent Tests", LettuceObjectTag) {
     LettuceObject obj = LettuceObject();
 
     SECTION("Should Add Component") {
@@ -79,7 +120,7 @@ TEST_CASE("LettuceObject.AddComponent Tests", "[LettuceObject]") {
     }
 }
 
-TEST_CASE("LettuceObject.HasComponent Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.HasComponent Tests", LettuceObjectTag) {
     class OtherComponent : public Component {};
     LettuceObject obj = LettuceObject();
 
@@ -108,7 +149,7 @@ TEST_CASE("LettuceObject.HasComponent Tests", "[LettuceObject]") {
     }
 }
 
-TEST_CASE("LettuceObject.RemoveComponent Test", "[LettuceObject]") {
+TEST_CASE("LettuceObject.RemoveComponent Test", LettuceObjectTag) {
     class OtherComponent : public Component {};
     LettuceObject obj = LettuceObject();
 
@@ -150,7 +191,7 @@ TEST_CASE("LettuceObject.RemoveComponent Test", "[LettuceObject]") {
     }
 }
 
-TEST_CASE("LettuceObject.SetEnabled Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.SetEnabled Tests", LettuceObjectTag) {
     LettuceObject obj = LettuceObject();
 
     SECTION("Set Enabled Should Default To True") {
@@ -241,7 +282,7 @@ TEST_CASE("LettuceObject.SetEnabled Tests", "[LettuceObject]") {
     }
 }
 
-TEST_CASE("LettuceObject.AddChild Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.AddChild Tests", LettuceObjectTag) {
 	LettuceObject obj = LettuceObject();
 
 	SECTION("Should Add Object") {
@@ -255,7 +296,7 @@ TEST_CASE("LettuceObject.AddChild Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.GetChildAt Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.GetChildAt Tests", LettuceObjectTag) {
 	LettuceObject obj = LettuceObject();
 
 	SECTION("Should Throw Exception When Negative Index Passed") {
@@ -285,7 +326,7 @@ TEST_CASE("LettuceObject.GetChildAt Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.GetChildIndex Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.GetChildIndex Tests", LettuceObjectTag) {
 	LettuceObject obj = LettuceObject();
 
 	SECTION("Should Return -1 When No Children Added") {
@@ -317,7 +358,7 @@ TEST_CASE("LettuceObject.GetChildIndex Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.RemoveChild Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.RemoveChild Tests", LettuceObjectTag) {
 	LettuceObject obj = LettuceObject();
 
 	SECTION("Should Return False When No Children Added") {
@@ -366,7 +407,7 @@ TEST_CASE("LettuceObject.RemoveChild Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.RemoveChildAt Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.RemoveChildAt Tests", LettuceObjectTag) {
 	LettuceObject obj = LettuceObject();
 
 	SECTION("Should Throw Exception When No Children") {
@@ -394,7 +435,7 @@ TEST_CASE("LettuceObject.RemoveChildAt Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.Render Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.Render Tests", LettuceObjectTag) {
 	class TestRenderComponent : public Component {
 	public:
 		bool DidRender = false;
@@ -425,7 +466,7 @@ TEST_CASE("LettuceObject.Render Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.Update Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.Update Tests", LettuceObjectTag) {
 	class TestUpdateComponent : public Component {
 	public:
 		bool DidUpdate = false;
@@ -456,7 +497,7 @@ TEST_CASE("LettuceObject.Update Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.SaveToData Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.SaveToData Tests", LettuceObjectTag) {
 	LettuceObject obj = LettuceObject();
 
 	SECTION("Should Save Position 0") {
@@ -504,7 +545,7 @@ TEST_CASE("LettuceObject.SaveToData Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.LoadFromData Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.LoadFromData Tests", LettuceObjectTag) {
 	SECTION("Should Load Position 0") {
 		LettuceObject* obj = new LettuceObject();
 		LettuceObjectData data = obj->SaveToData();
@@ -580,7 +621,7 @@ TEST_CASE("LettuceObject.LoadFromData Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.GetComponent Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.GetComponent Tests", LettuceObjectTag) {
 	class OtherComponent : public Component {};
 	class SpecialComponent : public Component {};
 
@@ -614,7 +655,7 @@ TEST_CASE("LettuceObject.GetComponent Tests", "[LettuceObject]") {
 	}
 }
 
-TEST_CASE("LettuceObject.GetComponents Tests", "[LettuceObject]") {
+TEST_CASE("LettuceObject.GetComponents Tests", LettuceObjectTag) {
 	class OtherComponent : public Component {};
 	class SpecialComponent : public Component {};
 

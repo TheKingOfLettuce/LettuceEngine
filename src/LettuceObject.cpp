@@ -176,6 +176,16 @@ float const LettuceObject::Rotation() const {
 }
 
 void LettuceObject::SetRotation(float rotation) {
+    if (rotation >= 360) {
+        while (rotation >= 360) {
+            rotation -= 360;
+        }
+    }
+    else if (rotation < 0) {
+        while (rotation < 0) {
+            rotation += 360;
+        }
+    }
     _rotation = rotation;
 }
 
