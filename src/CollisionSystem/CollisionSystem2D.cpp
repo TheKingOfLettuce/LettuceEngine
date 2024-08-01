@@ -38,7 +38,8 @@ void Collision2DQuadTree::Render(RenderMessage* msg) const {
 }
 
 bool Collision2DQuadTree::Insert(Collider2D* object) {
-    if (!object->Intersects(_area)) return false;
+    if (!_area.ContainsAABB(object->GetBox(), Vector2(), object->Lettuce()->Position())) 
+        return false;
 
     if (_objects.size() < _maxObjects && IsLeaf()) {
         _objects.emplace(object);
@@ -121,7 +122,8 @@ std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(const Co
     }
     if (numResults != 0 && results->size() >= numResults)
         return results;
-    if (!area->Intersects(_area)) return results;
+    if (!_area.IntersectsAABB(area->GetBox(), Vector2(), area->Lettuce()->Position())) 
+        return results;
 
     for(Collider2D* object : _objects) {
         if (area->Intersects(object))
