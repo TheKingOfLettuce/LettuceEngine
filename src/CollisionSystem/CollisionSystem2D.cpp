@@ -38,10 +38,10 @@ void Collision2DQuadTree::Render(RenderMessage* msg) const {
 }
 
 bool Collision2DQuadTree::Insert(Collider2D* object) {
-    if (!_area.ContainsAABB(object->GetBox(), Vector2(), object->Lettuce()->Position())) 
+    if (!_area.IntersectsAABB(object->GetBox(), Vector2(), object->Lettuce()->Position())) 
         return false;
 
-    if (_objects.size() < _maxObjects && IsLeaf()) {
+    if (IsLeaf() && _objects.size() < _maxObjects) {
         _objects.emplace(object);
         return true;
     }
@@ -49,34 +49,30 @@ bool Collision2DQuadTree::Insert(Collider2D* object) {
     if (IsLeaf() && _area.GetHalfSize().X > .5)
         Split();
 
-    if (!IsLeaf()) {
-        for (int i = 0; i < 4; i++) {
-            if (_children[i]->Insert(object))
-                return true;
-        }
+    for (int i = 0; i < 4; i++) {
+        _children[i]->Insert(object);
     }
     
-
-    _objects.emplace(object);
     return true;
 }
 
 bool Collision2DQuadTree::Remove(Collider2D* object) {
-    if (!object->Intersects(_area)) 
+    if (!_area.IntersectsAABB(object->GetBox(), Vector2(), object->Lettuce()->Position()))
         return false;
-    bool didRemove = _objects.erase(object);
-    if (IsLeaf()) 
-        return didRemove;
+    if (IsLeaf()) {
+        return _objects.erase(object);
+    }
 
+    bool didRemove = false;
     for(int i = 0; i < 4; i++) {
         if (_children[i]->Remove(object)) {
             didRemove = true;
-            break;
         }
     }
 
     if (!didRemove) 
         return false;
+
     for (int i = 0; i < 4; i++) {
         if (!_children[i]->IsEmpty(true)) 
             return true;
@@ -100,20 +96,12 @@ void Collision2DQuadTree::Split() {
 
     std::unordered_set<Collider2D*> newValues = std::unordered_set<Collider2D*>();
     for(Collider2D* object : _objects) {
-        bool addedToChild = false;
         for(int i = 0; i < 4; i++) {
-            if (_children[i]->Insert(object)) {
-                addedToChild = true;
-                break;
-            }
-        }
-
-        if (!addedToChild) {
-            newValues.emplace(object);
+            _children[i]->Insert(object);
         }
     }
 
-    _objects = std::move(newValues);
+    _objects.clear();
 }
 
 std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(const Collider2D* area, std::unordered_set<Collider2D*>* results, size_t numResults) const {
@@ -125,14 +113,15 @@ std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(const Co
     if (!_area.IntersectsAABB(area->GetBox(), Vector2(), area->Lettuce()->Position())) 
         return results;
 
-    for(Collider2D* object : _objects) {
-        if (area->Intersects(object))
-            results->emplace(object);
-        if (numResults != 0 && results->size() >= numResults)
-            return results;
+    if (IsLeaf()) {
+        for(Collider2D* object : _objects) {
+            if (area->Intersects(object))
+                results->emplace(object);
+            if (numResults != 0 && results->size() >= numResults)
+                return results;
+        }
+        return results;
     }
-
-    if (IsLeaf()) return results;
 
     for (int i = 0; i < 4; i++) {
        _children[i]->FindIntersections(area, results);
@@ -149,14 +138,15 @@ std::unordered_set<Collider2D*>* Collision2DQuadTree::FindIntersections(Vector2 
         return results;
     if (!_area.ContainsPoint(point)) return results;
 
-    for(Collider2D* obj : _objects) {
-        if (obj->Contains(point))
-            results->emplace(obj);
-        if (numResults != 0 && results->size() >= numResults)
-            return results;
+    if (IsLeaf()) {
+        for(Collider2D* obj : _objects) {
+            if (obj->Contains(point))
+                results->emplace(obj);
+            if (numResults != 0 && results->size() >= numResults)
+                return results;
+        }
+        return results;
     }
-
-    if (IsLeaf()) return results;
 
     for (int i = 0; i < 4; i++) {
         _children[i]->FindIntersections(point, results);
@@ -169,11 +159,13 @@ std::unordered_set<Collider2D*>* Collision2DQuadTree::GetAllObjects(std::unorder
     if (results == nullptr) {
         results = new std::unordered_set<Collider2D*>();
     }
-    for (Collider2D* obj: _objects) {
-        results->insert(obj);
-    }
-    if (IsLeaf())
+    if (IsLeaf()) {
+        for (Collider2D* obj: _objects) {
+            results->insert(obj);
+        }
         return results;
+    }
+    
     for (int i = 0; i < 4; i++) {
         _children[i]->GetAllObjects(results);
     }
