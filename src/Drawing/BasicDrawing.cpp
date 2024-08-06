@@ -64,8 +64,9 @@ void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, c
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
     Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);
+    // TODO add custom pivot to texture thats not just center
     ::DrawTexturePro(tex, ::Rectangle({0, 0, (float)tex.width, (float)tex.height}), 
-        ::Rectangle({point.X, point.Y, tex.width*scale.X, tex.height*scale.Y}), ::Vector2({0, 0}), rotation, c);
+        ::Rectangle({point.X, point.Y, tex.width*scale.X, tex.height*scale.Y}), ::Vector2({(tex.width >> 1)*scale.X, (tex.height >> 1)*scale.Y}), rotation, c);
 }
 
 LettuceEngine::CollisionSystem::AABB BasicDrawing::MeasureText(const std::string text, float size, float spacing) {
