@@ -177,9 +177,14 @@ float const LettuceObject::Rotation() const {
 }
 
 void LettuceObject::SetRotation(float rotation) {
+    float oldRot  = _rotation;
     _rotation = fmod(rotation, 360);
     if (_rotation < 0) {
         _rotation += 360;
+    }
+
+    for (LettuceObject* child : *_children) {
+        child->SetRotation(child->Rotation() + (_rotation - oldRot));
     }
 }
 

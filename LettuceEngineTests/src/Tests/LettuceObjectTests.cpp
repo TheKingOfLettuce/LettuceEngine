@@ -93,6 +93,34 @@ TEST_CASE("LettuceObject.Rotation Tests", LettuceObjectTag) {
 		obj.SetRotation(-1869);
 		REQUIRE(obj.Rotation() == 291);
 	}
+
+	SECTION("Should rotate children") {
+		LettuceObject* childA = new LettuceObject();
+		LettuceObject* childB = new LettuceObject();
+		obj.AddChild(childA);
+		childA->AddChild(childB);
+		childB->SetRotation(45);
+		childA->SetRotation(45);
+		obj.SetRotation(45);
+
+		REQUIRE(obj.Rotation() == 45);
+		REQUIRE(childA->Rotation() == 90);
+		REQUIRE(childB->Rotation() == 135);
+	}
+
+	SECTION("Should rotate children with clamps") {
+		LettuceObject* childA = new LettuceObject();
+		LettuceObject* childB = new LettuceObject();
+		obj.AddChild(childA);
+		childA->AddChild(childB);
+		childB->SetRotation(180);
+		childA->SetRotation(180);
+		obj.SetRotation(180);
+
+		REQUIRE(obj.Rotation() == 180);
+		REQUIRE(childA->Rotation() == 0);
+		REQUIRE(childB->Rotation() == 180);
+	}
 }
 
 TEST_CASE("LettuceObject.AddComponent Tests", LettuceObjectTag) {
