@@ -34,7 +34,8 @@ class Vector2 {
 
         std::string ToString() const;
 
-        static Vector2 Zero();
+        static const Vector2 ZERO;
+        static const Vector2 ONE;
 };
 
 void to_json(nlohmann::json& j, const Vector2& v);

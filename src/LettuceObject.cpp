@@ -7,9 +7,9 @@ using json = nlohmann::json;
 using LettuceEngine::Math::Vector2;
 
 LettuceObject::LettuceObject() {
-    _position = Vector2(0.0f, 0.0f);
+    _position = Vector2::ZERO;
     _rotation = 0;
-    _scale = Vector2(1.0f, 1.0f);
+    _scale = Vector2::ONE;
     _enabled = true;
 
     _components = new std::unordered_map<size_t, std::vector<Component*>*>();
@@ -35,6 +35,7 @@ LettuceObject::~LettuceObject() {
     }
     delete _components;
     delete _children;
+    delete _positionChangeCallback;
 }
 
 void LettuceObject::AddComponent(Component* component, bool startEnabled) {
@@ -175,8 +176,42 @@ float const LettuceObject::Rotation() const {
     return _rotation;
 }
 
+void LettuceObject::SetRotation(float rotation) {
+    float oldRot  = _rotation;
+    _rotation = fmod(rotation, 360);
+    if (_rotation < 0) {
+        _rotation += 360;
+    }
+
+    if (_children->size() == 0)
+        return;
+
+    float rotDiff = _rotation - oldRot;
+
+    for (LettuceObject* child : *_children) {
+        child->SetRotation(child->Rotation() + rotDiff);
+    }
+}
+
 Vector2 LettuceObject::Scale() const {
     return _scale;
+}
+
+void LettuceObject::SetScale(Vector2 scale) {
+    if (scale == Vector2::ZERO) {
+        throw new std::invalid_argument("Cannot set scale to be zero vector (0, 0)");
+    }
+    if (scale.X < 0 || scale.Y < 0) {
+        throw new std::invalid_argument("Cannot set scale to negative value: " + scale.ToString());
+    }
+
+    Vector2 scaleDiff = Vector2(scale.X / _scale.X, scale.Y / _scale.Y); // yuck, surely theres a better way to do this
+
+    _scale = scale;
+
+    for (LettuceObject* child : *_children) {
+        child->SetScale(child->Scale() * scaleDiff);
+    }
 }
 
 bool LettuceObject::Enabled() const {

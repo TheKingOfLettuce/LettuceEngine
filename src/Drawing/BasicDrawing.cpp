@@ -34,10 +34,11 @@ void BasicDrawing::DrawElipse(const LVector2& center, const LColor& color, const
     ::DrawEllipse(center.X, center.Y, radius.X, radius.Y, c);
 }
 
-void BasicDrawing::DrawRectangle(const LVector2 &center, const LColor &color, const LVector2 &halfSize) {
+void BasicDrawing::DrawRectangle(const LVector2 &center, const LColor &color, const LVector2 &halfSize, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
-    ::DrawRectangle(center.X - halfSize.X, center.Y - halfSize.Y, halfSize.X * 2, halfSize.Y * 2, c);
+    ::DrawRectanglePro(::Rectangle({center.X - halfSize.X, center.Y - halfSize.Y, halfSize.X * 2, halfSize.Y * 2}), 
+        ::Vector2(), rotation, c);
 }
 
 void BasicDrawing::DrawRectangleLines(const LVector2 &center, const LColor &color, const LVector2 &halfSize) {
@@ -52,17 +53,20 @@ void BasicDrawing::DrawText(const std::string text, const LVector2& point, const
     ::DrawText(text.data(), point.X, point.Y, size, c);
 }
 
-void BasicDrawing::DrawText(const std::string text, const LVector2& point, float size, float spacing, const LColor& color) {
+void BasicDrawing::DrawText(const std::string text, const LVector2& point, float size, float spacing, const LColor& color, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
-    ::DrawTextEx(::GetFontDefault(), text.data(), ::Vector2({point.X, point.Y}), size, spacing, c);
+    ::DrawTextPro(::GetFontDefault(), text.data(), ::Vector2({point.X, point.Y}), 
+        ::Vector2(), rotation, size, spacing, c);
 }
 
-void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color) {
+void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color, const LVector2& scale, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
     Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);
-    ::DrawTexture(tex, point.X, point.Y, c);
+    // TODO add custom pivot to texture thats not just center
+    ::DrawTexturePro(tex, ::Rectangle({0, 0, (float)tex.width, (float)tex.height}), 
+        ::Rectangle({point.X, point.Y, tex.width*scale.X, tex.height*scale.Y}), ::Vector2({(tex.width >> 1)*scale.X, (tex.height >> 1)*scale.Y}), rotation, c);
 }
 
 LettuceEngine::CollisionSystem::AABB BasicDrawing::MeasureText(const std::string text, float size, float spacing) {

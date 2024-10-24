@@ -46,7 +46,12 @@ const LettuceEngine::CollisionSystem::AABB Collider2D::GetBox() const {
 }
 
 void Collider2D::SetBox(LettuceEngine::CollisionSystem::AABB box) {
+    Collision2DQuadTree* system = LettuceEngine::Engine::CollisionSystem();
+    if (_enabled)
+        system->Remove(this);
     _box = box;
+    if (_enabled)
+        system->Insert(this);
 }
 
 void Collider2D::Render(RenderMessage* msg) {

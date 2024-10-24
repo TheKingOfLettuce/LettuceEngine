@@ -9,7 +9,7 @@ const char* CollisionSystem2DTAG = "[CollisionSystem2D]";
 
 TEST_CASE("CollisionSystem2D.Insert Tests", CollisionSystem2DTAG) {
     SECTION("Should allow insert if within area") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(25, 25));
         Collider2D* collider1 = new Collider2D();
@@ -30,30 +30,25 @@ TEST_CASE("CollisionSystem2D.Insert Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should not allow insert if not within area") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(-25, -25));
         Collider2D* collider1 = new Collider2D();
         lettuce1.AddComponent(collider1, false);
-        REQUIRE(system.Insert(collider1));
+        REQUIRE_FALSE(system.Insert(collider1));
         
         LettuceObject lettuce2 = LettuceObject();
-        lettuce2.SetPosition(Vector2(99.5, 99.5));
+        // .6 because our colliders size is .5
+        lettuce2.SetPosition(Vector2(100.6, 100.6));
         Collider2D* collider2 = new Collider2D();
         lettuce2.AddComponent(collider2, false);
-        REQUIRE(system.Insert(collider2));
-
-        LettuceObject lettuce3 = LettuceObject();
-        lettuce3.SetPosition(Vector2(0, 0));
-        Collider2D* collider3 = new Collider2D();
-        lettuce3.AddComponent(collider3, false);
-        REQUIRE(system.Insert(collider3));
+        REQUIRE_FALSE(system.Insert(collider2));
     }
 }
 
 TEST_CASE("CollisionSystem2D.Remove Tests", CollisionSystem2DTAG) {
     SECTION("Should not remove if not added") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(25, 25));
         Collider2D* collider1 = new Collider2D();
@@ -62,7 +57,7 @@ TEST_CASE("CollisionSystem2D.Remove Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should remove if added") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(25, 25));
         Collider2D* collider1 = new Collider2D();
@@ -72,7 +67,7 @@ TEST_CASE("CollisionSystem2D.Remove Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should remove all if all added") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(25, 25));
         Collider2D* collider1 = new Collider2D();
@@ -101,7 +96,7 @@ TEST_CASE("CollisionSystem2D.Remove Tests", CollisionSystem2DTAG) {
 
 TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
     SECTION("Should find nothing if nothing added with point") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         std::unordered_set<Collider2D*>* hits = system.FindIntersections(Vector2(25, 25));
         REQUIRE(hits->size() == 0);
         delete hits;
@@ -111,7 +106,7 @@ TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should find individual colliders with point") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(25, 25));
         Collider2D* collider1 = new Collider2D();
@@ -142,7 +137,7 @@ TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should find overlapped colliders with point") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(10, 10));
         Collider2D* collider1 = new Collider2D();
@@ -163,7 +158,7 @@ TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should find nothing if nothing added with area") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuceArea = LettuceObject();
         Collider2D* colliderArea = new Collider2D();
         colliderArea->SetBox(AABB(Vector2(10, 10), Vector2()));
@@ -178,7 +173,7 @@ TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should find individual colliders with area") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(25, 25));
         Collider2D* collider1 = new Collider2D();
@@ -222,7 +217,7 @@ TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should find overlapped colliders with area") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(10, 10));
         Collider2D* collider1 = new Collider2D();
@@ -249,7 +244,7 @@ TEST_CASE("CollisionSystem2D.FindIntersections Tests", CollisionSystem2DTAG) {
     }
 
     SECTION("Should find overlapped colliders with area with max results") {
-        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(100, 100), Vector2()));
+        Collision2DQuadTree system = Collision2DQuadTree(AABB(Vector2(50, 50), Vector2(50, 50)));
         LettuceObject lettuce1 = LettuceObject();
         lettuce1.SetPosition(Vector2(10, 10));
         Collider2D* collider1 = new Collider2D();

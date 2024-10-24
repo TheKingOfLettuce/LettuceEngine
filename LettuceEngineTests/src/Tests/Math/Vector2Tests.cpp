@@ -43,7 +43,7 @@ TEST_CASE("Vector2.Normalize Tests", "[Vector2]") {
     SECTION("Should keep 0 vector at 0") {
         Vector2 v = Vector2();
         v.Normalize();
-        REQUIRE(v == Vector2::Zero());
+        REQUIRE(v == Vector2::ZERO);
     }
 
     SECTION("Should normalize one*x vector a one vector") {
@@ -265,6 +265,6 @@ TEST_CASE("Vector2.operator= Tests", "[Vector2]") {
 
 TEST_CASE("Vector2.Static Tests", "[Vector2]") {
     SECTION("Should return zero vector") {
-        REQUIRE(Vector2::Zero() == Vector2());
+        REQUIRE(Vector2::ZERO == Vector2());
     }
 }
