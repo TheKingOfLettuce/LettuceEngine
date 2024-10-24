@@ -20,7 +20,7 @@ float Vector2::Magnitude() {
 void Vector2::Normalize() {
     float length = Magnitude();
     if (length == 0) {
-        *this = Zero();
+        *this = ZERO;
         return;
     }
     *this /= length;
@@ -117,9 +117,8 @@ void Vector2::operator/=(const float scale) {
     this->Y /= scale;
 }
 
-Vector2 Vector2::Zero() {
-    return Vector2();
-}
+const Vector2 Vector2::ZERO = Vector2(0, 0);
+const Vector2 Vector2::ONE = Vector2(1, 1);
 
 std::string Vector2::ToString() const {
     return "(" + std::to_string(X) + ", " + std::to_string(Y) + ")";

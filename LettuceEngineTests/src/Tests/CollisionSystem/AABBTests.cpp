@@ -304,7 +304,7 @@ TEST_CASE("AABB.IntersectsAABB Tests", AABBTAG) {
 TEST_CASE("AABB.ContainsPoint Tests", AABBTAG) {
     SECTION("Should contain zero vector") {
         AABB box = AABB();
-        REQUIRE(box.ContainsPoint(Vector2::Zero()));
+        REQUIRE(box.ContainsPoint(Vector2::ZERO));
     }
 
     SECTION("Should contain points within default values") {
@@ -326,7 +326,7 @@ TEST_CASE("AABB.ContainsPoint Tests", AABBTAG) {
     SECTION("Should not contain zero vector if offset") {
         AABB box = AABB();
         box.SetOffset(Vector2(5, 5));
-        REQUIRE_FALSE(box.ContainsPoint(Vector2::Zero()));
+        REQUIRE_FALSE(box.ContainsPoint(Vector2::ZERO));
     }
 
     SECTION("Should not contain points within default values if offset") {

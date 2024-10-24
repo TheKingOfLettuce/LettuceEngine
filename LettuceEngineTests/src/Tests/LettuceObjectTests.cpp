@@ -16,13 +16,13 @@ TEST_CASE("LettuceObject.Position Tests", LettuceObjectTag) {
     LettuceObject obj = LettuceObject();
 
     SECTION("Should Be Zero Vector On Start") {
-        REQUIRE(obj.Position() == Vector2::Zero());
+        REQUIRE(obj.Position() == Vector2::ZERO);
     }
 
     SECTION("Should Be Set Vector") {
 		Vector2 newPos = Vector2(5, 5);
 		obj.SetPosition(newPos);
-        REQUIRE_FALSE(obj.Position() == Vector2::Zero());
+        REQUIRE_FALSE(obj.Position() == Vector2::ZERO);
         REQUIRE(obj.Position() == newPos);
     }
 
@@ -120,6 +120,90 @@ TEST_CASE("LettuceObject.Rotation Tests", LettuceObjectTag) {
 		REQUIRE(obj.Rotation() == 180);
 		REQUIRE(childA->Rotation() == 0);
 		REQUIRE(childB->Rotation() == 180);
+	}
+}
+
+TEST_CASE("LettuceObject.Scale Tests", LettuceObjectTag) {
+	LettuceObject obj = LettuceObject();
+
+	SECTION("Should deafult to One Vector") {
+		REQUIRE(obj.Scale() == Vector2::ONE);
+	}
+
+	SECTION("Should set to scale vector") {
+		Vector2 newScale = Vector2(2, 2);
+		obj.SetScale(newScale);
+		REQUIRE(obj.Scale() == newScale);
+	}
+
+	SECTION("Should not allow zero vector") {
+		REQUIRE_THROWS(obj.SetScale(Vector2::ZERO));
+	}
+
+	SECTION("Should not allow negative vectors") {
+		REQUIRE_THROWS(obj.SetScale(Vector2(1, -1)));
+		REQUIRE_THROWS(obj.SetScale(Vector2(-1, 1)));
+		REQUIRE_THROWS(obj.SetScale(Vector2(-1, -1)));
+	}
+
+	SECTION("Should affect scale of all children") {
+		LettuceObject* child1 = new LettuceObject();
+		LettuceObject* child2 = new LettuceObject();
+		LettuceObject* child3 = new LettuceObject();
+
+		child2->SetScale(Vector2(.5, .5));
+		child3->SetScale(Vector2(.25, .25));
+
+		obj.AddChild(child1);
+		child1->AddChild(child2);
+		child2->AddChild(child3);
+
+		child1->SetScale(Vector2(2, 2));
+
+		REQUIRE(obj.Scale() == Vector2::ONE);
+		REQUIRE(child1->Scale() == Vector2(2, 2));
+		REQUIRE(child2->Scale() == Vector2::ONE);
+		REQUIRE(child3->Scale() == Vector2(.5, .5));
+	}
+
+	SECTION("Should affect scale of all children again") {
+		LettuceObject* child1 = new LettuceObject();
+		LettuceObject* child2 = new LettuceObject();
+		LettuceObject* child3 = new LettuceObject();
+
+		child2->SetScale(Vector2(.5, .5));
+		child3->SetScale(Vector2(.25, .25));
+
+		obj.AddChild(child1);
+		child1->AddChild(child2);
+		child2->AddChild(child3);
+
+		child1->SetScale(Vector2(.5, .5));
+
+		REQUIRE(obj.Scale() == Vector2::ONE);
+		REQUIRE(child1->Scale() == Vector2(.5, .5));
+		REQUIRE(child2->Scale() == Vector2(.25, .25));
+		REQUIRE(child3->Scale() == Vector2(.125, .125));
+	}
+
+	SECTION("Should affect scale of all children complex") {
+		LettuceObject* child1 = new LettuceObject();
+		LettuceObject* child2 = new LettuceObject();
+		LettuceObject* child3 = new LettuceObject();
+
+		child2->SetScale(Vector2(.5, .5));
+		child3->SetScale(Vector2(.25, .25));
+
+		obj.AddChild(child1);
+		child1->AddChild(child2);
+		child2->AddChild(child3);
+
+		child1->SetScale(Vector2(.2, .1));
+
+		REQUIRE(obj.Scale() == Vector2::ONE);
+		REQUIRE(child1->Scale() == Vector2(.2, .1));
+		REQUIRE(child2->Scale() == Vector2(.1, .05));
+		REQUIRE(child3->Scale() == Vector2(.05, .025));
 	}
 }
 
@@ -530,7 +614,7 @@ TEST_CASE("LettuceObject.SaveToData Tests", LettuceObjectTag) {
 
 	SECTION("Should Save Position 0") {
 		LettuceObjectData data = obj.SaveToData();
-		REQUIRE(data.Position == Vector2::Zero());
+		REQUIRE(data.Position == Vector2::ZERO);
 	}
 
 	SECTION("Should Save Set Position") {
@@ -580,7 +664,7 @@ TEST_CASE("LettuceObject.LoadFromData Tests", LettuceObjectTag) {
 		delete obj;
 		obj = new LettuceObject();
 		obj->LoadFromData(data);
-		REQUIRE(obj->Position() == Vector2::Zero());
+		REQUIRE(obj->Position() == Vector2::ZERO);
 		delete obj;
 	}
 
