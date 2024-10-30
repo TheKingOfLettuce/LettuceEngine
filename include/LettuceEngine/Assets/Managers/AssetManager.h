@@ -91,7 +91,7 @@ class AssetManager {
         static void UnloadAllAssets();
 
         static void SaveToJson(nlohmann::json& j);
-        static void LoadFromJson(const nlohmann::json& data);
+        static void LoadFromJson(const nlohmann::json& data, bool additive = false);
 
     private:
         template <typename T>
@@ -101,6 +101,7 @@ class AssetManager {
             return HasAssetType(typeid(T).hash_code());
         }
         static bool HasAssetType(size_t typeID);
+        static void AddEngineCollections();
         static std::unordered_map<size_t, AssetCollection*> _assets;
 };
 

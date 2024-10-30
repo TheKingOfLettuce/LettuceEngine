@@ -16,4 +16,4 @@ public:
     }
 };
 
-#define REGISTER_ASSET_COLLECTION(derived_class) AssetCollectionCreator<derived_class> derived_class##Creator(#derived_class);
+#define REGISTER_ASSET_COLLECTION(collectionType) AssetCollectionCreator<collectionType> collectionType##Creator(#collectionType);

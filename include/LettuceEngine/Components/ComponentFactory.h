@@ -16,4 +16,4 @@ public:
     }
 };
 
-#define REGISTER_COMPONENT(derived_class) ComponentCreator<derived_class> derived_class##Creator(#derived_class);
+#define REGISTER_COMPONENT(componentType) ComponentCreator<componentType> componentType##Creator(#componentType);

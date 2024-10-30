@@ -16,4 +16,4 @@ public:
     }
 };
 
-#define REGISTER_ASSET(derived_class) AssetCreator<derived_class> derived_class##Creator(#derived_class);
+#define REGISTER_ASSET(assetType) AssetCreator<assetType> assetType##Creator(#assetType);

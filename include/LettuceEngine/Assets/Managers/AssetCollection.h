@@ -16,6 +16,8 @@ class AssetCollection {
         virtual Asset* GetAsset(std::string id) const;
         const std::vector<Asset*> GetAllAssets() const;
         virtual size_t GetAssetType() const;
+        virtual size_t AssetCount() const;
+        virtual bool HasAssets() const;
 
         void SaveToJson(nlohmann::json& j) const;
         void LoadFromJson(const nlohmann::json& data);

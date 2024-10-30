@@ -78,6 +78,14 @@ size_t AssetCollection::GetAssetType() const {
     return typeid(Asset).hash_code();
 }
 
+size_t AssetCollection::AssetCount() const {
+    return _assets.size();
+}
+
+bool AssetCollection::HasAssets() const {
+    return AssetCount() != 0;
+}
+
 using json = nlohmann::json;
 
 void AssetCollection::SaveToJson(json& j) const {

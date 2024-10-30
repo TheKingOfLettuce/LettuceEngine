@@ -50,7 +50,10 @@ void AssetManager::UnloadAllAssets() {
         delete pair.second;
     }
     _assets.clear();
-    // add engine level asset collections here
+    AddEngineCollections();
+}
+
+void AssetManager::AddEngineCollections() {
     _assets.emplace(typeid(ImageAsset).hash_code(), new ImageAssetCollection());
     _assets.emplace(typeid(Texture2DAsset).hash_code(), new Texture2DAssetCollection());
 }
@@ -86,9 +89,18 @@ using json = nlohmann::json;
 void AssetManager::SaveToJson(json& j) {
     std::vector<std::pair<std::string, json>> saveData = std::vector<std::pair<std::string, json>>();
     for(const auto& assetCollectionPair : _assets) {
-        std::string saveName = Factory<AssetCollection>::GetSaveName(typeid(*assetCollectionPair.second).hash_code());
-        if (saveName.empty()) {
-            Log::Warning("Cannot persist Unique AssetCollection " + std::string(typeid(*assetCollectionPair.second).name()));
+        const std::type_info& collectionType = typeid(*assetCollectionPair.second);
+        std::string saveName = "";
+        if (collectionType != typeid(AssetCollection)) {
+            saveName = Factory<AssetCollection>::GetSaveName(typeid(*assetCollectionPair.second).hash_code());
+            if (saveName.empty()) {
+                Log::Warning("Cannot persist Unique AssetCollection " + std::string(typeid(*assetCollectionPair.second).name(), " saving as default collection"));
+                saveName = "";
+            }
+        }
+        else if (!assetCollectionPair.second->HasAssets()) {
+            // default collection with no assets, dont save
+            continue;
         }
 
         json assetData;
@@ -100,16 +112,40 @@ void AssetManager::SaveToJson(json& j) {
     j["assetData"] = saveData;
 }
 
-void AssetManager::LoadFromJson(const json& data) {
+void AssetManager::LoadFromJson(const json& data, bool additive) {
     std::vector<std::pair<std::string, json>> saveData = data.at("assetData");
+    if (!additive)
+        _assets.clear();
+        // could add engine collections here if we dont want third-party ways to handle engine data
     for(const auto& assetCollectionPair : saveData) {
-        AssetCollection* collection = Factory<AssetCollection>::Create(assetCollectionPair.first);
-        if (collection == nullptr) {
-            Log::Error("Failed to create asset collection from save name: " + assetCollectionPair.first);
-            continue;
+        AssetCollection* collection;
+        bool isDefaultCollection = assetCollectionPair.first == "";
+        if (!isDefaultCollection) {
+            collection = Factory<AssetCollection>::Create(assetCollectionPair.first);
+            if (collection == nullptr) {
+                Log::Error("Failed to create asset collection from save name: " + assetCollectionPair.first);
+                continue;
+            }
         }
-
+        else {
+            collection = new AssetCollection();
+        }
         collection->LoadFromJson(assetCollectionPair.second);
-        AddAssetCollection(collection, collection->GetAssetType());
+        // hack for default collection, 
+        // Assets are deserialized fine but collection->GetAssetType() returns default Asset type instead of concrete
+        // if we walk through the assets, it will know to assoicate the concrete type with default collection
+        if (isDefaultCollection || !AddAssetCollection(collection, collection->GetAssetType())) {
+            for(Asset* asset : collection->GetAllAssets()) {
+                if (!AddAsset(asset, isDefaultCollection)) {
+                    Log::Error("Failed to add asset to existing collection with name " + asset->GetAssetID());
+                    continue;
+                }
+                collection->RemoveAsset(asset);
+            }
+            delete collection;
+        }
     }
+    if (!additive)
+        // ensure engine collections are there
+        AddEngineCollections();
 }

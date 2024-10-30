@@ -333,7 +333,37 @@ REGISTER_ASSET_COLLECTION(CounterAssetCollection);
 TEST_CASE("AssetManager.LoadFromJson Tests", AssetManagerTAG) {
     AssetManager::UnloadAllAssets();
 
-    SECTION("Should Save Then Load Specfic Type Collection") {
+    SECTION("Should Save Then Load Specfic Assets in Generic Type Collection") {
+        CounterAsset* asset0 = new CounterAsset("Asset0");
+        CounterAsset* asset1 = new CounterAsset("Asset1");
+        asset1->Count = 1;
+        CounterAsset* asset2 = new CounterAsset("Asset2");
+        asset2->Count = 2;
+        CounterAsset* asset3 = new CounterAsset("Asset3");
+        asset3->Count = 3;
+        
+        AssetManager::AddAsset(asset0);
+        AssetManager::AddAsset(asset1);
+        AssetManager::AddAsset(asset2);
+        AssetManager::AddAsset(asset3);
+
+        nlohmann::json managerJson;
+        AssetManager::SaveToJson(managerJson);
+        AssetManager::UnloadAllAssets();
+        AssetManager::LoadFromJson(managerJson);
+
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset0"));
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset1"));
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset2"));
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset3"));
+
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset0")->Count == 0);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset1")->Count == 1);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset2")->Count == 2);
+        REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset3")->Count == 3);
+    }
+
+    SECTION("Should Save Then Load Specfic Assets in Specfic Type Collection") {
         AssetManager::AddAssetCollection<CounterAsset>(new CounterAssetCollection());
         CounterAsset* asset0 = new CounterAsset("Asset0");
         CounterAsset* asset1 = new CounterAsset("Asset1");
@@ -366,5 +396,51 @@ TEST_CASE("AssetManager.LoadFromJson Tests", AssetManagerTAG) {
         REQUIRE(AssetManager::GetAsset<CounterAsset>("Asset3")->Count == 3);
 
         REQUIRE(static_cast<const CounterAssetCollection*>(AssetManager::GetAssetCollection<CounterAsset>())->TotalCount == 6);
+    }
+
+    SECTION("Should Save Then Load Assets and Delete Previous Ones") {
+        AssetManager::AddAssetCollection<CounterAsset>(new CounterAssetCollection());
+        CounterAsset* asset0 = new CounterAsset("Asset0");
+        
+        AssetManager::AddAsset(asset0);
+
+        nlohmann::json managerJson;
+        AssetManager::SaveToJson(managerJson);
+
+        AssetManager::UnloadAllAssets();
+        REQUIRE_FALSE(AssetManager::HasAsset<CounterAsset>("Asset0"));
+        REQUIRE_FALSE(AssetManager::HasAsset<CounterAsset>("Asset1"));
+        AssetManager::AddAssetCollection<CounterAsset>(new CounterAssetCollection());
+        CounterAsset* asset1 = new CounterAsset("Asset1");
+        AssetManager::AddAsset(asset1);
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset1"));
+
+        AssetManager::LoadFromJson(managerJson);
+
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset0"));
+        REQUIRE_FALSE(AssetManager::HasAsset<CounterAsset>("Asset1"));
+    }
+
+    SECTION("Should Save Then Load Assets and Keep Previous Ones") {
+        AssetManager::AddAssetCollection<CounterAsset>(new CounterAssetCollection());
+        CounterAsset* asset0 = new CounterAsset("Asset0");
+        
+        AssetManager::AddAsset(asset0);
+
+        nlohmann::json managerJson;
+        AssetManager::SaveToJson(managerJson);
+
+        AssetManager::UnloadAllAssets();
+        REQUIRE_FALSE(AssetManager::HasAsset<CounterAsset>("Asset0"));
+        REQUIRE_FALSE(AssetManager::HasAsset<CounterAsset>("Asset1"));
+        AssetManager::AddAssetCollection<CounterAsset>(new CounterAssetCollection());
+        CounterAsset* asset1 = new CounterAsset("Asset1");
+        AssetManager::AddAsset(asset1);
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset1"));
+
+        AssetManager::LoadFromJson(managerJson, true);
+
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset0"));
+        REQUIRE(AssetManager::HasAsset<CounterAsset>("Asset1"));
     }
 }
