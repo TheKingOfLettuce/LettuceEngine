@@ -80,7 +80,7 @@ TEST_CASE("AssetManager.GetAsset Tests", AssetManagerTAG) {
         REQUIRE(AssetManager::GetAsset<CustomAsset>("notAdded") == nullptr);
     }
 
-    SECTION("Should Add Assets with Same ID but Different Type") {
+    SECTION("Should Get Assets with Same ID but Different Type") {
         Asset* asset = new Asset("Asset");
         CustomAsset* customAsset = new CustomAsset("Asset");
 

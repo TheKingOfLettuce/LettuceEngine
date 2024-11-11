@@ -9,6 +9,8 @@ class Texture2DAsset : public Asset {
         ~Texture2DAsset();
 
         ImageAsset* GetImageAsset();
+        int Width();
+        int Height();
 
         void SaveToJson(nlohmann::json& j) const override;
         void LoadFromJson(const nlohmann::json& data) override;
