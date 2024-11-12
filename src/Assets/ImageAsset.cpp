@@ -13,7 +13,7 @@ ImageAsset::ImageAsset(std::string filePath, std::string id) : ImageAsset(id) {
 
 ImageAsset::~ImageAsset() {}
 
-std::string ImageAsset::GetFilePath() {return _filePath;}
+std::string ImageAsset::GetFilePath() const {return _filePath;}
 
 void ImageAsset::SaveToJson(json& j) const {
     Asset::SaveToJson(j);

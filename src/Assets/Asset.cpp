@@ -10,7 +10,7 @@ Asset::Asset(std::string id) {
 
 Asset::~Asset() {}
 
-std::string Asset::GetAssetID() {return _assetID;}
+std::string Asset::GetAssetID() const {return _assetID;}
 
 void Asset::SaveToJson(json& j) const {
     j["assetID"] = _assetID;

@@ -5,7 +5,7 @@
 static std::unordered_map<std::string, Image> _imageData = std::unordered_map<std::string, Image>();
 static std::unordered_map<std::string, Texture2D> _texture2DData = std::unordered_map<std::string, Texture2D>();
 
-bool RaylibAssetManager::AddImageAsset(ImageAsset* asset) {
+bool RaylibAssetManager::AddImageAsset(const ImageAsset* asset) {
     if (HasImageData(asset->GetAssetID())) {
         // collision
         return false;
@@ -15,7 +15,17 @@ bool RaylibAssetManager::AddImageAsset(ImageAsset* asset) {
     return true;
 }
 
-bool RaylibAssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
+bool RaylibAssetManager::AddImageData(const Image data, std::string id) {
+    if (HasImageData(id)) {
+        // collision
+        return false;
+    }
+
+    _imageData.emplace(id, data);
+    return true;
+}
+
+bool RaylibAssetManager::AddTexture2DAsset(const Texture2DAsset* asset) {
     if (!LettuceEngine::Engine::IsRunning()) {
         throw new std::runtime_error("LettuceEngine is not running, cannot add Texture2D data");
     }
@@ -38,11 +48,21 @@ bool RaylibAssetManager::AddTexture2DAsset(Texture2DAsset* asset) {
     return true;
 }
 
-void RaylibAssetManager::RemoveImageData(ImageAsset* asset) {
+bool RaylibAssetManager::AddTexture2DData(const Texture2D data, std::string id) {
+    if (HasTexture2DData(id)) {
+        // collision
+        return false;
+    }
+
+    _texture2DData.emplace(id, data);
+    return true;
+}
+
+void RaylibAssetManager::RemoveImageData(const ImageAsset* asset) {
     RemoveImageData(asset->GetAssetID());
 }
 
-void RaylibAssetManager::RemoveImageData(std::string id) {
+void RaylibAssetManager::RemoveImageData(const std::string id) {
     if (!HasImageData(id)) {
         return;
     }
@@ -53,11 +73,11 @@ void RaylibAssetManager::RemoveImageData(std::string id) {
     return;
 }
 
-void RaylibAssetManager::RemoveTexture2DData(Texture2DAsset* asset) {
+void RaylibAssetManager::RemoveTexture2DData(const Texture2DAsset* asset) {
     RemoveTexture2DData(asset->GetAssetID());
 }
 
-void RaylibAssetManager::RemoveTexture2DData(std::string id) {
+void RaylibAssetManager::RemoveTexture2DData(const std::string id) {
     if (!LettuceEngine::Engine::IsRunning()) {
         throw new std::runtime_error("LettuceEngine is not running, cannot unload Texture2D data");
     }
@@ -72,11 +92,11 @@ void RaylibAssetManager::RemoveTexture2DData(std::string id) {
     return;
 }
 
-Image RaylibAssetManager::GetImageData(ImageAsset* asset) {
+Image RaylibAssetManager::GetImageData(const ImageAsset* asset) {
     return GetImageData(asset->GetAssetID());
 }
 
-Image RaylibAssetManager::GetImageData(std::string id) {
+Image RaylibAssetManager::GetImageData(const std::string id) {
     if (!HasImageData(id)) {
         throw std::runtime_error("Raylib image data is not loaded yet for: " + id);
     }
@@ -84,11 +104,11 @@ Image RaylibAssetManager::GetImageData(std::string id) {
     return _imageData.at(id);
 }
 
-Texture2D RaylibAssetManager::GetTexture2DData(Texture2DAsset* asset) {
+Texture2D RaylibAssetManager::GetTexture2DData(const Texture2DAsset* asset) {
     return GetTexture2DData(asset->GetAssetID());
 }
 
-Texture2D RaylibAssetManager::GetTexture2DData(std::string id) {
+Texture2D RaylibAssetManager::GetTexture2DData(const std::string id) {
     if (!LettuceEngine::Engine::IsRunning()) {
         throw new std::runtime_error("LettuceEngine is not running, cannot get Texture2D data");
     }
@@ -100,15 +120,15 @@ Texture2D RaylibAssetManager::GetTexture2DData(std::string id) {
     return _texture2DData.at(id);
 }
 
-bool RaylibAssetManager::HasImageData(ImageAsset* asset) {
+bool RaylibAssetManager::HasImageData(const ImageAsset* asset) {
     return HasImageData(asset->GetAssetID());
 }
 
-bool RaylibAssetManager::HasImageData(std::string id) {
+bool RaylibAssetManager::HasImageData(const std::string id) {
     return _imageData.find(id) != _imageData.end();
 }
 
-bool RaylibAssetManager::HasTexture2DData(Texture2DAsset* asset) {
+bool RaylibAssetManager::HasTexture2DData(const Texture2DAsset* asset) {
     return HasTexture2DData(asset->GetAssetID());
 }
 

@@ -6,6 +6,7 @@ using json = nlohmann::json;
 
 Component::Component() {
     _enabled = false;
+    _savable = true;
 }
 
 Component::~Component() {
@@ -34,6 +35,10 @@ void Component::SetEnabled(bool flag) {
 
 bool Component::GetEnabled() const {
     return _enabled;
+}
+
+bool Component::Saveable() const {
+    return _savable;
 }
 
 LettuceObject* Component::Lettuce() const {

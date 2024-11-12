@@ -14,11 +14,11 @@ Texture2DAsset::Texture2DAsset(ImageAsset* image, std::string id) : Texture2DAss
 
 Texture2DAsset::~Texture2DAsset() {}
 
-ImageAsset* Texture2DAsset::GetImageAsset() {
+ImageAsset* Texture2DAsset::GetImageAsset() const {
     return _image;
 }
 
-int Texture2DAsset::Width() {
+int Texture2DAsset::Width() const {
     if (!RaylibAssetManager::HasTexture2DData(this)) {
         Log::Error("Cannot get width of texture " + _assetID + ". Texture is not loaded!");
         return -1;
@@ -26,7 +26,7 @@ int Texture2DAsset::Width() {
     return RaylibAssetManager::GetTexture2DData(this).width;
 }
 
-int Texture2DAsset::Height() {
+int Texture2DAsset::Height() const  {
     if (!RaylibAssetManager::HasTexture2DData(this)) {
         Log::Error("Cannot get height of texture " + _assetID + ". Texture is not loaded!");
         return -1;

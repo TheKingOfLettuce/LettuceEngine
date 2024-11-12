@@ -8,7 +8,7 @@ class Asset {
         Asset(std::string id);
         virtual ~Asset();
 
-        std::string GetAssetID();
+        std::string GetAssetID() const;
 
         void virtual SaveToJson(nlohmann::json& j) const;
         void virtual LoadFromJson(const nlohmann::json& data);

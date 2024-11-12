@@ -8,9 +8,9 @@ class Texture2DAsset : public Asset {
         Texture2DAsset(ImageAsset* image, std::string id);
         ~Texture2DAsset();
 
-        ImageAsset* GetImageAsset();
-        int Width();
-        int Height();
+        ImageAsset* GetImageAsset() const;
+        int Width() const;
+        int Height() const;
 
         void SaveToJson(nlohmann::json& j) const override;
         void LoadFromJson(const nlohmann::json& data) override;

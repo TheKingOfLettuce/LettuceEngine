@@ -228,13 +228,15 @@ LettuceObjectData LettuceObject::SaveToData() const {
     for (auto const& pair : *_components) {
         std::vector<Component*>* componentList = pair.second;
         for (size_t i = 0; i < componentList->size(); i++) {
-            ComponentPair pair = ComponentPair();
             Component* c = componentList->operator[](i);
+            if (!c->Saveable()) 
+                continue;
             const std::string typeName = Factory<Component>::GetSaveName(typeid(*c).hash_code());
             if (typeName.empty())  {
                 Log::Info("Received an empty component type when saving LettuceObject");
                 continue;
             }
+            ComponentPair pair = ComponentPair();
             pair.TypeName = typeName;
             json j;
             c->SaveToJson(j);

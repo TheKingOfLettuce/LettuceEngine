@@ -12,27 +12,29 @@ class RaylibAssetManager {
     friend Texture2DAssetCollection;
 
     public:
-        static Image GetImageData(ImageAsset* asset);
-        static Image GetImageData(std::string id);
-        static bool HasImageData(ImageAsset* asset);
-        static bool HasImageData(std::string id);
+        static Image GetImageData(const ImageAsset* asset);
+        static Image GetImageData(const std::string id);
+        static bool HasImageData(const ImageAsset* asset);
+        static bool HasImageData(const std::string id);
 
-        static Texture2D GetTexture2DData(Texture2DAsset* asset);
-        static Texture2D GetTexture2DData(std::string id); 
-        static bool HasTexture2DData(Texture2DAsset* asset);
-        static bool HasTexture2DData(std::string id);      
+        static Texture2D GetTexture2DData(const Texture2DAsset* asset);
+        static Texture2D GetTexture2DData(const std::string id); 
+        static bool HasTexture2DData(const Texture2DAsset* asset);
+        static bool HasTexture2DData(const std::string id);      
 
     private:
         static void LoadAllAssetManagerGPUData();
         static void UnloadAllAssetManagerGPUData();
 
-        static bool AddImageAsset(ImageAsset* asset);
-        static bool AddTexture2DAsset(Texture2DAsset* asset);
+        static bool AddImageAsset(const ImageAsset* asset);
+        static bool AddImageData(const Image data, std::string id);
+        static bool AddTexture2DAsset(const Texture2DAsset* asset);
+        static bool AddTexture2DData(const Texture2D data, std::string id);
 
-        static void RemoveImageData(ImageAsset* asset);
-        static void RemoveImageData(std::string id);
-        static void RemoveTexture2DData(Texture2DAsset* asset);
-        static void RemoveTexture2DData(std::string id);
+        static void RemoveImageData(const ImageAsset* asset);
+        static void RemoveImageData(const std::string id);
+        static void RemoveTexture2DData(const Texture2DAsset* asset);
+        static void RemoveTexture2DData(const std::string id);
 
         static void RemoveAllData();
         static void RemoveAllImageData();
