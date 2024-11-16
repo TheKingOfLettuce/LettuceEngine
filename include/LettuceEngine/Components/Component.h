@@ -16,7 +16,6 @@ class Component {
         void SetEnabled(bool flag);
         bool GetEnabled() const;
         LettuceObject* Lettuce() const;
-        bool Saveable() const;
 
         void virtual Render(RenderMessage* msg);
         void virtual Update(UpdateMessage* msg);
@@ -30,5 +29,4 @@ class Component {
     
         LettuceObject* _lettuce;
         bool _enabled;
-        bool _savable;
 };

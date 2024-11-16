@@ -89,6 +89,8 @@ using json = nlohmann::json;
 void AssetManager::SaveToJson(json& j) {
     std::vector<std::pair<std::string, json>> saveData = std::vector<std::pair<std::string, json>>();
     for(const auto& assetCollectionPair : _assets) {
+        if (!assetCollectionPair.second->ShouldSave())
+            continue;
         const std::type_info& collectionType = typeid(*assetCollectionPair.second);
         std::string saveName = "";
         if (collectionType != typeid(AssetCollection)) {

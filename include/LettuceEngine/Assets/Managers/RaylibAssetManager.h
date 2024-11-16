@@ -4,6 +4,7 @@
 #include "LettuceEngine/Assets/Texture2DAsset.h"
 #include "LettuceEngine/Assets/Managers/AssetManager.h"
 #include "LettuceEngine/Engine.h"
+#include "LettuceEngine/Components/Render/RenderTextureRenderer.h"
 
 class RaylibAssetManager {
     friend AssetManager;
@@ -20,16 +21,19 @@ class RaylibAssetManager {
         static Texture2D GetTexture2DData(const Texture2DAsset* asset);
         static Texture2D GetTexture2DData(const std::string id); 
         static bool HasTexture2DData(const Texture2DAsset* asset);
-        static bool HasTexture2DData(const std::string id);      
+        static bool HasTexture2DData(const std::string id); 
+
+        static RenderTexture2D GetRenderTexture2DData(const RenderTextureRenderer* render);
+        static bool HasRenderTexture2DData(const RenderTextureRenderer* render);
+        static bool AddRenderTexture2DData(const RenderTextureRenderer* render, const RenderTexture2D data);
+        static void RemoveRenderTexutre2DData(const RenderTextureRenderer* render);
 
     private:
         static void LoadAllAssetManagerGPUData();
         static void UnloadAllAssetManagerGPUData();
 
         static bool AddImageAsset(const ImageAsset* asset);
-        static bool AddImageData(const Image data, std::string id);
         static bool AddTexture2DAsset(const Texture2DAsset* asset);
-        static bool AddTexture2DData(const Texture2D data, std::string id);
 
         static void RemoveImageData(const ImageAsset* asset);
         static void RemoveImageData(const std::string id);
@@ -39,4 +43,5 @@ class RaylibAssetManager {
         static void RemoveAllData();
         static void RemoveAllImageData();
         static void RemoveAllTexture2DData();
+        static void RemoveAllRenderTexture2DData();
 };

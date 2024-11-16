@@ -4,6 +4,7 @@
 
 AssetCollection::AssetCollection() {
     _assets = std::unordered_map<std::string, Asset*>();
+    _shouldSave = true;
 }
 
 AssetCollection::~AssetCollection() {
@@ -84,6 +85,10 @@ size_t AssetCollection::AssetCount() const {
 
 bool AssetCollection::HasAssets() const {
     return AssetCount() != 0;
+}
+
+bool AssetCollection::ShouldSave() const {
+    return _shouldSave;
 }
 
 using json = nlohmann::json;

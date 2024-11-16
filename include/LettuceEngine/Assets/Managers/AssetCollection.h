@@ -21,6 +21,8 @@ class AssetCollection {
 
         void SaveToJson(nlohmann::json& j) const;
         void LoadFromJson(const nlohmann::json& data);
+        bool ShouldSave() const;
     protected:
         std::unordered_map<std::string, Asset*> _assets;
+        bool _shouldSave;
 };
