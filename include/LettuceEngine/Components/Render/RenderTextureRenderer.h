@@ -14,6 +14,6 @@ class RenderTextureRenderer : public Component {
 
         void LoadFromSize(int width, int height);
 
-        std::vector<LettuceEngine::Math::Color> GetColors();
-        void WriteColors(std::vector<LettuceEngine::Math::Color> newColors);
+        const std::vector<LettuceEngine::Math::Color> GetColors();
+        void WriteColors(const std::vector<LettuceEngine::Math::Color> newColors);
 } ;

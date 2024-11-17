@@ -117,50 +117,6 @@ bool RaylibAssetManager::HasTexture2DData(std::string id) {
     return _texture2DData.find(id) != _texture2DData.end();
 }
 
-bool RaylibAssetManager::AddRenderTexture2DData(const RenderTextureRenderer* render, const RenderTexture2D data) {
-    if (!LettuceEngine::Engine::IsRunning()) {
-        throw new std::runtime_error("LettuceEngine is not running, cannot get Texture2D data");
-    }
-
-    if (HasRenderTexture2DData(render)) {
-        return false;
-    }
-
-    _renderTexture2DData.emplace(render, data);
-    return true;
-}
-
-bool RaylibAssetManager::HasRenderTexture2DData(const RenderTextureRenderer* render) {
-    return _renderTexture2DData.find(render) != _renderTexture2DData.end();
-}
-
-RenderTexture2D RaylibAssetManager::GetRenderTexture2DData(const RenderTextureRenderer* render) {
-    if (!LettuceEngine::Engine::IsRunning()) {
-        throw new std::runtime_error("LettuceEngine is not running, cannot get Texture2D data");
-    }
-
-    if (HasRenderTexture2DData(render)) {
-        throw std::runtime_error("Raylib RenderTexture2D data is not loaded yet");
-    }
-
-    return _renderTexture2DData.at(render);
-}
-
-void RaylibAssetManager::RemoveRenderTexutre2DData(const RenderTextureRenderer* render) {
-    if (!LettuceEngine::Engine::IsRunning()) {
-        throw new std::runtime_error("LettuceEngine is not running, cannot unload RenderTexture2D data");
-    }
-
-    if (!HasRenderTexture2DData(render)) {
-        return;
-    }
-
-    RenderTexture2D data = _renderTexture2DData.at(render);
-    _renderTexture2DData.erase(render);
-    ::UnloadRenderTexture(data);
-    return;
-}
-
 void RaylibAssetManager::RemoveAllData() {
     RemoveAllImageData();
     RemoveAllTexture2DData();

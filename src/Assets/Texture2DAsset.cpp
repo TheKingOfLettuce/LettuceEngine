@@ -4,6 +4,7 @@
 REGISTER_ASSET(Texture2DAsset);
 
 using json = nlohmann::json;
+using LColor = LettuceEngine::Math::Color;
 
 Texture2DAsset::Texture2DAsset() : Asset() {}
 Texture2DAsset::Texture2DAsset(std::string id) : Asset(id) {}
@@ -32,6 +33,15 @@ int Texture2DAsset::Height() const  {
         return -1;
     }
     return RaylibAssetManager::GetTexture2DData(this).height;
+}
+
+const std::vector<LColor> Texture2DAsset::Colors() const {
+    if (!RaylibAssetManager::HasTexture2DData(this)) {
+        Log::Error("Cannot get colors of texture " + _assetID + ". Texture is not loaded!");
+        return std::vector<LColor>();
+    }
+
+
 }
 
 void Texture2DAsset::SaveToJson(json& j) const {

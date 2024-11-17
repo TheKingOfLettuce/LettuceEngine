@@ -23,11 +23,6 @@ class RaylibAssetManager {
         static bool HasTexture2DData(const Texture2DAsset* asset);
         static bool HasTexture2DData(const std::string id); 
 
-        static RenderTexture2D GetRenderTexture2DData(const RenderTextureRenderer* render);
-        static bool HasRenderTexture2DData(const RenderTextureRenderer* render);
-        static bool AddRenderTexture2DData(const RenderTextureRenderer* render, const RenderTexture2D data);
-        static void RemoveRenderTexutre2DData(const RenderTextureRenderer* render);
-
     private:
         static void LoadAllAssetManagerGPUData();
         static void UnloadAllAssetManagerGPUData();
@@ -43,5 +38,4 @@ class RaylibAssetManager {
         static void RemoveAllData();
         static void RemoveAllImageData();
         static void RemoveAllTexture2DData();
-        static void RemoveAllRenderTexture2DData();
 };

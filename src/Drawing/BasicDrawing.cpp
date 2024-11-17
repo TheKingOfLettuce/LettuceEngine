@@ -2,6 +2,7 @@
 #include "Raylib/raylib.h"
 #include "LettuceEngine/Engine.h"
 #include "LettuceEngine/Assets/Managers/RaylibAssetManager.h"
+#include "LettuceEngine/Drawing/RaylibDrawing.h"
 
 using LColor = LettuceEngine::Math::Color;
 using LVector2 = LettuceEngine::Math::Vector2;
@@ -64,9 +65,7 @@ void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, c
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
     Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);
-    // TODO add custom pivot to texture thats not just center
-    ::DrawTexturePro(tex, ::Rectangle({0, 0, (float)tex.width, (float)tex.height}), 
-        ::Rectangle({point.X, point.Y, tex.width*scale.X, tex.height*scale.Y}), ::Vector2({(tex.width >> 1)*scale.X, (tex.height >> 1)*scale.Y}), rotation, c);
+    RaylibDrawing::DrawTexture(point, tex, c, scale, rotation);
 }
 
 LettuceEngine::CollisionSystem::AABB BasicDrawing::MeasureText(const std::string text, float size, float spacing) {
