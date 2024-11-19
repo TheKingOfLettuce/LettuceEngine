@@ -7,6 +7,7 @@
 
 static std::unordered_map<const RenderTextureRenderer*, RenderTexture2D> RENDER_TEXTURE_MAP = std::unordered_map<const RenderTextureRenderer*, RenderTexture2D>();
 using LColor = LettuceEngine::Math::Color;
+using LVector2 = LettuceEngine::Math::Vector2;
 
 bool HasRenderTexture(const RenderTextureRenderer* render) {
     return RENDER_TEXTURE_MAP.find(render) != RENDER_TEXTURE_MAP.end();
@@ -62,16 +63,38 @@ const std::vector<LColor> RenderTextureRenderer::GetColors() {
     return colors;
 }
 
-void RenderTextureRenderer::WriteColors(const std::vector<LColor> colors) {
+void RenderTextureRenderer::DrawPixel(const LColor color, const LVector2 point) {
     if (!HasRenderTexture(this))
         return;
-    int textureWidth = RENDER_TEXTURE_MAP[this].texture.width;
-    int textureHeight = RENDER_TEXTURE_MAP[this].texture.height;
-    if (colors.size() != textureWidth*textureHeight) {
-        throw new std::invalid_argument("Provided color length does not match RenderTexture width x height");
+
+    ::BeginTextureMode(RENDER_TEXTURE_MAP[this]);
+
+    ::DrawPixel(point.X, point.Y, ::Color({color.R, color.G, color.B, color.A}));
+
+    ::EndTextureMode();
+}
+
+void RenderTextureRenderer::DrawPixels(const std::vector<std::pair<const LColor, const LVector2>> colors) {
+    if (!HasRenderTexture(this))
+        return;
+
+    ::BeginTextureMode(RENDER_TEXTURE_MAP[this]);
+
+    for (std::pair<const LColor, const LVector2> pixel : colors) {
+        ::DrawPixel(pixel.second.X, pixel.second.Y, ::Color({pixel.first.R, pixel.first.G, pixel.first.B, pixel.first.A}));
     }
+
+    ::EndTextureMode();
+}
+
+void RenderTextureRenderer::DrawTexture(const Texture2DAsset* texture, const LVector2 point) {
+    if (!HasRenderTexture(this))
+        return;
 
     ::BeginTextureMode(RENDER_TEXTURE_MAP[this]);
     
+    //BasicDrawing::DrawTexture(point, texture, LColor(), LVector2::ONE);
+    ::DrawTexture(RaylibAssetManager::GetTexture2DData(texture), point.X, point.Y, WHITE);
+
     ::EndTextureMode();
 }

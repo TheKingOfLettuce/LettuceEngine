@@ -61,7 +61,7 @@ void BasicDrawing::DrawText(const std::string text, const LVector2& point, float
         ::Vector2(), rotation, size, spacing, c);
 }
 
-void BasicDrawing::DrawTexture(const LVector2& point, Texture2DAsset* texture, const LColor& color, const LVector2& scale, const float rotation) {
+void BasicDrawing::DrawTexture(const LVector2& point, const Texture2DAsset* texture, const LColor& color, const LVector2& scale, const float rotation) {
     if (!CanDraw()) return;
     RColor c = ConvertEngineColor(color);
     Texture2D tex = RaylibAssetManager::GetTexture2DData(texture);

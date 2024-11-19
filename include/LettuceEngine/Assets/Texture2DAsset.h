@@ -1,6 +1,5 @@
 #pragma once
 #include "LettuceEngine/Assets/ImageAsset.h"
-#include <vector>
 
 class Texture2DAsset : public Asset {
     public:
@@ -12,7 +11,6 @@ class Texture2DAsset : public Asset {
         ImageAsset* GetImageAsset() const;
         int Width() const;
         int Height() const;
-        const std::vector<LettuceEngine::Math::Color> Colors() const;
 
         void SaveToJson(nlohmann::json& j) const override;
         void LoadFromJson(const nlohmann::json& data) override;
