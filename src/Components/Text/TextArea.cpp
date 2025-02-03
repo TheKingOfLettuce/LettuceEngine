@@ -212,7 +212,7 @@ TextLine TextArea::AddTextToLine(std::string text, TextLine line) {
         return line;
     }
     
-    if (!_boundingArea.ContainsAABB(BasicDrawing::MeasureText(text, _currentSize, _currentSpacing))) {
+    if (!_boundingArea.ContainsAABB(BasicDrawing::MeasureText(text, _currentSize, _currentSpacing), Vector2::ZERO, _boundingArea.GetOffset())) {
         Log::Warning("Word does not fit in TextArea: " + text);
         if (line.Size() != 0) {
             _lines.push_back(line);
@@ -224,7 +224,7 @@ TextLine TextArea::AddTextToLine(std::string text, TextLine line) {
     }
 
     AABB currentSize = BasicDrawing::MeasureText(line.LineText + text, _currentSize, _currentSpacing);
-    if (!_boundingArea.ContainsAABB(currentSize)) {
+    if (!_boundingArea.ContainsAABB(currentSize, Vector2::ZERO, _boundingArea.GetOffset())) {
         _lines.push_back(line);
         line = TextLine();
         currentSize = BasicDrawing::MeasureText(line.LineText + text, _currentSize, _currentSpacing);
