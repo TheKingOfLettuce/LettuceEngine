@@ -5,6 +5,7 @@ REGISTER_ASSET(Texture2DAsset);
 
 using json = nlohmann::json;
 using LColor = LettuceEngine::Math::Color;
+using LVector2 = LettuceEngine::Math::Vector2;
 
 Texture2DAsset::Texture2DAsset() : Asset() {}
 Texture2DAsset::Texture2DAsset(std::string id) : Asset(id) {}
@@ -46,4 +47,25 @@ void Texture2DAsset::LoadFromJson(const json& data) {
     Asset::LoadFromJson(data);
     _image = new ImageAsset("");
     _image->LoadFromJson(data.at("image"));
+}
+
+std::vector<std::pair<const LColor, const LVector2>> Texture2DAsset::GetColorData() const {
+    std::vector<std::pair<const LColor, const LVector2>> toReturn = std::vector<std::pair<const LColor, const LVector2>>();
+    Texture2D tex = RaylibAssetManager::GetTexture2DData(this);
+    Image img = ::LoadImageFromTexture(tex);
+    ::Color* colors = static_cast<::Color*>(img.data);
+    for(int y = img.height-1; y >= 0; y--) {
+        for (int x = 0; x < img.width; x++) {
+            ::Color c = *colors;
+            colors++;
+
+            toReturn.push_back(std::pair<LColor, LVector2>(LColor(c.r, c.g, c.b, c.a), LVector2(x, y)));
+        }
+    }
+    ::UnloadImage(img);
+
+    if (toReturn.empty()) {
+        Log::Error("Could not find any pixels in texture: " + _assetID);
+    }
+    return toReturn;
 }
